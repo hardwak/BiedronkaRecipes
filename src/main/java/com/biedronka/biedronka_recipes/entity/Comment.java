@@ -15,7 +15,7 @@ public class Comment {
 
     // FK do Clients
     @ManyToOne
-    @JoinColumn(name = "FK_Klient")
+    @JoinColumn(name = "FK_Client")
     private Client client;
 
     public Comment() {

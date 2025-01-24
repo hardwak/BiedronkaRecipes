@@ -21,14 +21,14 @@ public class Client {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "first_name")
+    @Column(name = "FirstName")
     private String firstName;
 
-    @Column(name = "last_name")
+    @Column(name = "LastName")
     private String lastName;
 
-    @Column(name = "account_created_date")
-    private LocalDate accountCreatedDate;
+    @Column(name = "AccountCreationDate")
+    private LocalDate accountCreationDate;
 
 
 
@@ -77,11 +77,11 @@ public class Client {
     }
 
     public LocalDate getAccountCreatedDate() {
-        return accountCreatedDate;
+        return accountCreationDate;
     }
 
     public void setAccountCreatedDate(LocalDate accountCreatedDate) {
-        this.accountCreatedDate = accountCreatedDate;
+        this.accountCreationDate = accountCreatedDate;
     }
 
     // ... get/set ...

@@ -14,12 +14,12 @@ public class ProductAllergen {
 
     // FK do Products
     @ManyToOne
-    @JoinColumn(name = "FK_Produkt")
+    @JoinColumn(name = "FK_Product")
     private Product product;
 
     // FK do Allergens
     @ManyToOne
-    @JoinColumn(name = "FK_Alergen")
+    @JoinColumn(name = "FK_Allergen")
     private Allergen allergen;
 
     public ProductAllergen() {

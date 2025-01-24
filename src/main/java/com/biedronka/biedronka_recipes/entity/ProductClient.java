@@ -15,18 +15,18 @@ public class ProductClient {
 
     // FK do Products
     @ManyToOne
-    @JoinColumn(name = "FK_Produkt")
+    @JoinColumn(name = "FK_Product")
     private Product product;
 
     // FK do Clients
     @ManyToOne
-    @JoinColumn(name = "FK_Klient")
+    @JoinColumn(name = "FK_client")
     private Client client;
 
-    @Column(name = "ilosc")
+    @Column(name = "Quantity")
     private Double amount;
 
-    @Column(name = "DataOstatniegoPrzegladu")
+    @Column(name = "LastViewedDate")
     private LocalDate lastCheckDate;
 
     public ProductClient() {

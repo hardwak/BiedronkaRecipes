@@ -13,25 +13,25 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "Name")
     private String name;
 
-    @Column(name = "brand")
+    @Column(name = "Brand")
     private String brand;
 
-    @Column(name = "weight")
+    @Column(name = "Weight")
     private Double weight;  // DECIMAL w bazie
 
-    @Column(name = "unit")
+    @Column(name = "Unit")
     private String unit;
 
-    @Column(name = "expiration_date")
+    @Column(name = "ExpirationDate")
     private LocalDate expirationDate;
 
-    @Column(name = "price")
+    @Column(name = "Price")
     private Double price;
 
-    @Column(name = "on_sale")
+    @Column(name = "OnSale")
     private Boolean onSale;
 
     public Product() {

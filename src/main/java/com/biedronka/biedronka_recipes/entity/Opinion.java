@@ -17,7 +17,7 @@ public class Opinion {
 
     // FK do Clients
     @ManyToOne
-    @JoinColumn(name = "FK_Klient")  // w oryginalnym schemacie
+    @JoinColumn(name = "FK_Client")  // w oryginalnym schemacie
     private Client client;
 
     public Opinion() {

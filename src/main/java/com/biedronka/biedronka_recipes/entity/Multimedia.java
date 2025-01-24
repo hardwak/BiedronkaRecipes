@@ -13,15 +13,15 @@ public class Multimedia {
     private Long id;
 
 
-    @Column(name = "url")
+    @Column(name = "URL")
     private String url;
 
-    @Column(name = "type")
+    @Column(name = "Type")
     private Integer type;  // w oryginale Typ = INTEGER
 
     // FK do Recipes
     @ManyToOne
-    @JoinColumn(name = "FK_Przepis")
+    @JoinColumn(name = "FK_Recipe")
     private Recipe recipe;
 
     public Multimedia() {

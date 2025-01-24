@@ -13,15 +13,15 @@ public class RecipeProduct {
 
     // FK do Recipes
     @ManyToOne
-    @JoinColumn(name = "FK_Przepis")
+    @JoinColumn(name = "FK_Recipe")
     private Recipe recipe;
 
     // FK do Products
     @ManyToOne
-    @JoinColumn(name = "FK_Produkt")
+    @JoinColumn(name = "FK_Product")
     private Product product;
 
-    @Column(name = "Ilosc")
+    @Column(name = "Quantity")
     private Double amount;
 
     public RecipeProduct() {

@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "CommentsRecipes")
+@Table(name = "CommentRecipes")
 public class CommentRecipe {
 
     @Id
@@ -15,15 +15,15 @@ public class CommentRecipe {
 
     // FK do Comments
     @ManyToOne
-    @JoinColumn(name = "FK_Komentarz")
+    @JoinColumn(name = "FK_Comment")
     private Comment comment;
 
     // FK do Recipes
     @ManyToOne
-    @JoinColumn(name = "FK_Przepis")
+    @JoinColumn(name = "FK_Recipe")
     private Recipe recipe;
 
-    @Column(name = "Data")
+    @Column(name = "Date")
     private LocalDate date;
 
     public CommentRecipe() {

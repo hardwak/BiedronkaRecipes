@@ -13,12 +13,12 @@ public class ClientRecipeLikes {
 
     // FK do Clients
     @ManyToOne
-    @JoinColumn(name = "FK_Klient")
+    @JoinColumn(name = "FK_Client")
     private Client client;
 
     // FK do Recipes
     @ManyToOne
-    @JoinColumn(name = "FK_Przepis")
+    @JoinColumn(name = "FK_Recipe")
     private Recipe recipe;
 
     public ClientRecipeLikes() {

@@ -22,7 +22,7 @@ public class Recipe {
 
     // FOREIGN KEY (employee_id) REFERENCES Employees(id)
     @ManyToOne
-    @JoinColumn(name = "FK_Pracownik")  // or "employee_id" if you changed the column name
+    @JoinColumn(name = "FK_Employee")
     private Employee employee;
 
     // bridging np. OpinionsRecipes, CommentsRecipes, RecipesProducts

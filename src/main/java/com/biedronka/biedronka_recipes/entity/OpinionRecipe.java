@@ -15,15 +15,15 @@ public class OpinionRecipe {
 
     // FK do Opinions
     @ManyToOne
-    @JoinColumn(name = "FK_Opinia")
+    @JoinColumn(name = "FK_Opinion")
     private Opinion opinion;
 
     // FK do Recipes
     @ManyToOne
-    @JoinColumn(name = "FK_Przepis")
+    @JoinColumn(name = "FK_Recipe")
     private Recipe recipe;
 
-    @Column(name = "Data")
+    @Column(name = "Date")
     private LocalDate date;
 
     public OpinionRecipe() {
