@@ -23,4 +23,7 @@ public class Multimedia {
 
     @OneToOne(mappedBy = "multimedia")
     private Recipe recipe;
+
+    @OneToOne(mappedBy = "multimedia")
+    private Product product;
 }

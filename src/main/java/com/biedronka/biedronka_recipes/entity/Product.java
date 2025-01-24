@@ -21,8 +21,7 @@ public class Product {
     private String name;
     private String brand;
     private Double price;
-//    private LocalDate expiryDate; //Makes no sense??
-//    private Boolean promo;
+    private Boolean promo;
 
     @ManyToMany(mappedBy = "products")
     private List<Allergen> allergens;
@@ -30,10 +29,19 @@ public class Product {
     @OneToMany(
             mappedBy = "product"
     )
-    private List<ShoppingListItem> shoppingListItems;
+    private List<StoreroomItem> storeroomItems;
 
     @OneToMany(
             mappedBy = "product"
     )
     private List<RecipeProducts> productRecipes;
+
+    @OneToMany(
+            mappedBy = "product"
+    )
+    private List<ShoppingListItem> shoppingListItems;
+
+    @OneToOne
+    @JoinColumn(name = "multimedia_id", referencedColumnName = "id")
+    private Multimedia multimedia;
 }

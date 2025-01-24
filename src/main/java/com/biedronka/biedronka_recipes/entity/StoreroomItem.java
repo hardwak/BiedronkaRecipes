@@ -6,20 +6,18 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class ShoppingListItem {
+public class StoreroomItem { //TODO spizarnia nie shopping list
     @Id
     @GeneratedValue
     private Long id;
-    private Double quantity;
-    private Double finalPrice;
-    private LocalDate confirmationDate;
+
+    @Column(nullable = false)
+    private Double amount;
 
     @ManyToOne
     @JoinColumn(
@@ -34,7 +32,5 @@ public class ShoppingListItem {
             nullable = false
     )
     private Product product;
-
-
 
 }

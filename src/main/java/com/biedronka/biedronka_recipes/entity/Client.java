@@ -46,6 +46,11 @@ public class Client {
     @OneToMany(
             mappedBy = "client"
     )
+    private List<StoreroomItem> storeroomItems;
+
+    @OneToMany(
+            mappedBy = "client"
+    )
     private List<ShoppingListItem> shoppingListItems;
 
     @OneToMany(
