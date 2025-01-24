@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Strona główna</title>
+</head>
+<body>
+<h1>Witaj w aplikacji przepisów Biedronka!</h1>
+
+<p>
+    To jest prosta strona główna, która demonstruje działanie Thymeleaf.
+</p>
+
+<ul>
+    <li><a th:href="@{/mvc/shopping-lists}">Przejdź do listy zakupów</a></li>
+    <li><a th:href="@{/mvc/shopping-lists/new}">Dodaj nowy element do listy zakupów</a></li>
+</ul>
+
+<p>
+    Działa Thymeleaf? Świetnie! Jeśli widzisz linki, kliknij je, aby przejść dalej.
+</p>
+</body>
+</html>
