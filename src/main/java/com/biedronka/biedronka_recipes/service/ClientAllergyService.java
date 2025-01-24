@@ -33,8 +33,8 @@ public class ClientAllergyService {
     }
 
     // Wyszukiwanie po composite key
-    public Optional<ClientAllergy> findByIds(Long clientId, Long allergenId) {
-        ClientAllergyId id = new ClientAllergyId(clientId, allergenId);
+    public Optional<ClientAllergy> findById(Long id ) {
+
         return clientAllergyRepository.findById(id);
     }
 
@@ -50,8 +50,8 @@ public class ClientAllergyService {
     }
 
     // Usuwanie
-    public void delete(Long clientId, Long allergenId) {
-        ClientAllergyId id = new ClientAllergyId(clientId, allergenId);
+    public void delete(Long id) {
+
         clientAllergyRepository.deleteById(id);
     }
 }

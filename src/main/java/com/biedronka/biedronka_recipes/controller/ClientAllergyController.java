@@ -25,11 +25,10 @@ public class ClientAllergyController {
                 .collect(Collectors.toList());
     }
 
-    // Dostęp do encji z kluczem kompozytowym – np. w parametrach
+
     @GetMapping("/find")
-    public ClientAllergyDTO find(@RequestParam Long clientId,
-                                 @RequestParam Long allergenId) {
-        ClientAllergy ca = clientAllergyService.findByIds(clientId, allergenId)
+    public ClientAllergyDTO find(@PathVariable Long id) {
+        ClientAllergy ca = clientAllergyService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Not found"));
         return toDTO(ca);
     }
@@ -41,9 +40,8 @@ public class ClientAllergyController {
     }
 
     @DeleteMapping
-    public void delete(@RequestParam Long clientId,
-                       @RequestParam Long allergenId) {
-        clientAllergyService.delete(clientId, allergenId);
+    public void delete(@PathVariable Long id) {
+        clientAllergyService.delete(id);
     }
 
     // mapowanie

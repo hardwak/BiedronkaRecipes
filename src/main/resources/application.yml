@@ -2,10 +2,10 @@ spring:
   application:
     name: biedronka_recipes
   datasource:
-    url: ${datasource.url}
-    username: ${datasource.username}
-    password: ${datasource.password}
-    driver-class-name: org.postgresql.Driver
+    url: ${datasource.url:jdbc:postgresql://localhost:5432/PrzepisyBiedronki}
+    username: ${datasource.username:postgres}
+    password: ${datasource.password:admin}
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -13,4 +13,5 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
     database: postgresql

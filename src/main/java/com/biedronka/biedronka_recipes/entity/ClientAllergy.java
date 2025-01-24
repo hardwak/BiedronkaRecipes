@@ -13,13 +13,13 @@ public class ClientAllergy {
     private Long id;
 
     // Powiązanie z tabelą Clients
-    @MapsId("clientId")
+
     @ManyToOne
     @JoinColumn(name = "FK_Client")
     private Client client;
 
     // Powiązanie z tabelą Allergens
-    @MapsId("allergenId")
+
     @ManyToOne
     @JoinColumn(name = "FK_Allergen")
     private Allergen allergen;

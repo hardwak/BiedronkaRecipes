@@ -20,7 +20,7 @@ public class ProductClient {
 
     // FK do Clients
     @ManyToOne
-    @JoinColumn(name = "FK_client")
+    @JoinColumn(name = "FK_Client")
     private Client client;
 
     @Column(name = "Quantity")

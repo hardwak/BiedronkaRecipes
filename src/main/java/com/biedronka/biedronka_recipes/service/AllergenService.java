@@ -27,16 +27,16 @@ public class AllergenService {
         return allergenRepository.findById(id);
     }
 
-    public Allergen createRecipe(Allergen recipe) {
+    public Allergen create(Allergen recipe) {
         // np. weryfikacja
         return allergenRepository.save(recipe);
     }
 
-    public Allergen updateRecipe(Allergen recipe) {
+    public Allergen update(Allergen recipe) {
         return allergenRepository.save(recipe);
     }
 
-    public void deleteRecipe(Long id) {
+    public void delete(Long id) {
         allergenRepository.deleteById(id);
     }
 }
