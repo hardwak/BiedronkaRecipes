@@ -1,5 +1,6 @@
 package com.biedronka.biedronka_recipes.entity;
 
+import com.biedronka.biedronka_recipes.entity.tags.Tag;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,6 +33,18 @@ public class Recipe {
 
     @ManyToMany(mappedBy = "favoriteRecipes")
     private List<Client> clientFavourites;
+
+    @ManyToMany
+    @JoinTable(
+            name = "recipe_tags",
+            joinColumns = {
+                    @JoinColumn(name = "recipe_id")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "tag_id")
+            }
+    )
+    private List<Tag> tags;
 
     @OneToMany(
             mappedBy = "recipe"
