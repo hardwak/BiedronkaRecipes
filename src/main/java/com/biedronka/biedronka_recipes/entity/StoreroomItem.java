@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class StoreroomItem { //TODO spizarnia nie shopping list
+public class StoreroomItem {
     @Id
     @GeneratedValue
     private Long id;
