@@ -32,10 +32,10 @@ public class Client {
     @JoinTable(
             name = "client_alergens",
             joinColumns = {
-                    @JoinColumn(name = "allergen_id")
+                    @JoinColumn(name = "client_id")
             },
             inverseJoinColumns = {
-                    @JoinColumn(name = "client_id")
+                    @JoinColumn(name = "allergen_id")
             }
     )
     private List<Allergen> allergens;

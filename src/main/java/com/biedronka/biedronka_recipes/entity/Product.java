@@ -27,10 +27,10 @@ public class Product {
     @JoinTable(
             name = "product_alergens",
             joinColumns = {
-                    @JoinColumn(name = "allergen_id")
+                    @JoinColumn(name = "product_id")
             },
             inverseJoinColumns = {
-                    @JoinColumn(name = "product_id")
+                    @JoinColumn(name = "allergen_id")
             }
     )
     private List<Allergen> allergens;
