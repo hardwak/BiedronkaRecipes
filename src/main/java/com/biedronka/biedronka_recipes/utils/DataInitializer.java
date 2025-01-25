@@ -22,7 +22,8 @@ public class DataInitializer {
             ProductRepository productRepository,
             StoreroomItemRepository storeroomItemRepository,
             RecipeProductsRepository recipeProductsRepository,
-            CommentRepository commentRepository
+            CommentRepository commentRepository,
+            MultimediaRepository multimediaRepository
     ) {
         return args -> {
             // Tworzenie produktów
@@ -32,13 +33,14 @@ public class DataInitializer {
             Product cukier = Product.builder().name("Cukier").build();
             Product maslo = Product.builder().name("Masło").build();
 
+
             productRepository.saveAll(Arrays.asList(mleko, jaja, chleb, cukier, maslo));
 
             // Tworzenie klienta
             Client client = Client.builder()
                     .firstName("Jan")
                     .lastName("Kowalski")
-                    .email("jan.kowalski@example.com")
+                    .email("jan.kowalski11@example.com")
                     .password("password") // Pamiętaj o hashowaniu haseł w rzeczywistej aplikacji
                     .creationDate(LocalDate.now())
                     .build();
@@ -65,9 +67,14 @@ public class DataInitializer {
             storeroomItemRepository.saveAll(Arrays.asList(storeroom1, storeroom2, storeroom3));
 
             // Tworzenie przepisu
+            Multimedia multimedia = Multimedia.builder()
+                    .url("https://example.com/images/omlet.jpg")
+                    .type("image")
+                    .build();
+            multimediaRepository.save(multimedia);
             Recipe przepis = Recipe.builder()
                     .name("Omlet")
-                    .multimedia(Multimedia.builder().url("https://example.com/images/omlet.jpg").build())
+                    .multimedia(multimedia)
                     .description("1. Roztrzep jajka.\n2. Dodaj mleko.\n3. Wlej na patelnię.\n4. Smaż aż się zetną.")
                     .build();
 
@@ -97,14 +104,14 @@ public class DataInitializer {
                     .client(client)
                     .recipe(przepis)
                     .comment("Przepis jest świetny! Proszę dodać więcej zdjęć.")
-                    .createdAt(LocalDateTime.from(LocalDate.now()))
+                    .createdAt(LocalDateTime.now())
                     .build();
 
             commentRepository.save(comment1);
 
             // Opcjonalnie: Dodawanie ulubionych przepisów, ocen itp.
-            client.getFavoriteRecipes().add(przepis);
-            clientRepository.save(client);
+//            client.getFavoriteRecipes().add(przepis);
+//            clientRepository.save(client);
         };
     }
 }

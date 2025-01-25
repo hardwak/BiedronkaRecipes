@@ -6,8 +6,7 @@ import lombok.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@Builder
-@NoArgsConstructor
+
 @AllArgsConstructor
 @Entity
 @DiscriminatorValue("Time")
