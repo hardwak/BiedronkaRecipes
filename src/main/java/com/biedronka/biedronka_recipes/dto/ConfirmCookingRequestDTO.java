@@ -14,6 +14,6 @@ import java.util.List;
 public class ConfirmCookingRequestDTO {
     private Long recipeId;
     private Long clientId;
-    private HashMap<RecipeProducts,Double> missingProducts;
+    private List<MissingProductDTO> missingProducts;
 }
 

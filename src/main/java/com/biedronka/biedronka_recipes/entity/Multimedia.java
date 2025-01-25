@@ -1,10 +1,9 @@
 package com.biedronka.biedronka_recipes.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Builder
@@ -18,9 +17,15 @@ public class Multimedia {
     private String url;
     private String type;
 
-    @OneToOne(mappedBy = "multimedia")
+    @OneToOne(fetch = FetchType.LAZY,mappedBy = "multimedia")
+
+    @EqualsAndHashCode.Exclude
+    @JsonIgnore
     private Recipe recipe;
 
-    @OneToOne(mappedBy = "multimedia")
+    @OneToOne(fetch = FetchType.LAZY,mappedBy = "multimedia")
+
+    @EqualsAndHashCode.Exclude
+    @JsonIgnore
     private Product product;
 }

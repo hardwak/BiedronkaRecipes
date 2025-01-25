@@ -1,5 +1,6 @@
 package com.biedronka.biedronka_recipes.entity;
 
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +12,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id"
+)
 public class RecipeProducts {
     @Id
     @GeneratedValue
@@ -23,6 +28,7 @@ public class RecipeProducts {
             name = "recipe_id",
             nullable = false
     )
+
     private Recipe recipe;
 
     @ManyToOne
@@ -30,5 +36,6 @@ public class RecipeProducts {
             name = "product_id",
             nullable = false
     )
+
     private Product product;
 }
