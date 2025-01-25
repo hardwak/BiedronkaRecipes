@@ -1,0 +1,56 @@
+<form action="/my-recipes/save" method="post">
+    <!-- Pole dla nazwy przepisu -->
+    <label for="name">Nazwa przepisu:</label>
+    <input type="text" name="name" id="name" th:value="${recipe.name}" required>
+
+    <!-- Pole dla opisu przepisu -->
+    <label for="description">Opis przepisu:</label>
+    <textarea name="description" id="description" th:value="${recipe.name}" required></textarea>
+
+    <!-- Dynamiczne dodawanie produktów -->
+    <h3>Produkty w przepisie:</h3>
+    <div id="product-container">
+        <!-- Dynamicznie dodawane produkty pojawią się tutaj -->
+        <div th:each="product, iterStat : ${recipe.recipeProducts}" class="product-item" style="margin-bottom: 10px;">
+            <label>ID produktu:</label>
+            <input type="number" name="recipeProducts[__${iterStat.index}__].productId" th:value="${product.productId}" required>
+
+            <label>Ilość:</label>
+            <input type="number" step="0.01" name="recipeProducts[__${iterStat.index}__].quantity" th:value="${product.quantity}" required>
+        </div>
+    </div>
+
+    <button type="button" onclick="addProduct()">Dodaj kolejny produkt</button>
+    <button type="submit">Zapisz przepis</button>
+</form>
+
+<script>
+    let productIndex = 0; // Początkowy indeks dla produktów
+
+    function addProduct() {
+        const container = document.getElementById('product-container');
+        const newProduct = document.createElement('div');
+        newProduct.classList.add('product-item');
+        newProduct.style.marginBottom = "10px";
+
+        // Dynamicznie tworzone pole dla ID produktu i ilości
+        newProduct.innerHTML = `
+            <label>ID produktu:</label>
+            <input type="number" name="recipeProducts[${productIndex}].productId" required>
+
+            <label>Ilość:</label>
+            <input type="number" step="0.01" name="recipeProducts[${productIndex}].amount" value="0.0" required>
+
+            <button type="button" onclick="removeProduct(this)">Usuń</button>
+        `;
+
+        container.appendChild(newProduct);
+        productIndex++;
+    }
+
+    function removeProduct(button) {
+        // Usunięcie wybranego produktu
+        const productItem = button.parentElement;
+        productItem.remove();
+    }
+</script>

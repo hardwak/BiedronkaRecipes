@@ -13,6 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @Controller
 @RequestMapping("/recipe")
@@ -25,6 +27,44 @@ public class RecipeController {
         this.recipeRepository = recipeRepository;
         this.clientRepository = clientRepository;
         this.recipeService = recipeService;
+    }
+
+    @GetMapping(value = "/api/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<Recipe> getRecipeByIdApi(@PathVariable long id) {
+        // Znajdź przepis w repozytorium
+        // W razie braku zwróć 404 (NOT FOUND).
+        return recipeRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping(value = "/api/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<Recipe> updateRecipeApi(@PathVariable long id,
+                                                  @RequestBody Recipe updatedRecipe) {
+        // Znajdujemy w bazie oryginalny przepis
+        return recipeRepository.findById(id)
+                .map(existingRecipe -> {
+                    // Przykład prostej aktualizacji wybranych pól
+                    existingRecipe.setName(updatedRecipe.getName());
+                    existingRecipe.setDescription(updatedRecipe.getDescription());
+                    Recipe saved = recipeRepository.save(existingRecipe);
+                    return ResponseEntity.ok(saved);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping(value = "/api/user_recipes/{clientId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<List<Recipe>> getRecipesByUserId(@PathVariable Long clientId) {
+        // Opcjonalnie: sprawdzenie, czy klient istnieje
+        if (!clientRepository.existsById(clientId)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        List<Recipe> recipes = recipeRepository.findByClientId(clientId);
+        return ResponseEntity.ok(recipes);
     }
 
     @GetMapping("/{id}")

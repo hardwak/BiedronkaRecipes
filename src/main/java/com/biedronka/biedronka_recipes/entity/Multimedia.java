@@ -14,7 +14,8 @@ public class Multimedia {
     @Id
     @GeneratedValue
     private Long id;
-    private String url;
+    @Builder.Default
+    private String url="\"https://example.com/images/omlet.jpg\"";
     private String type;
 
     @OneToOne(fetch = FetchType.LAZY,mappedBy = "multimedia")

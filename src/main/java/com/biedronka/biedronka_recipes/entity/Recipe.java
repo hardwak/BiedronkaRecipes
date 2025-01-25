@@ -21,10 +21,12 @@ import java.util.List;
 )
 public class Recipe {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
     private String description;
+    @Builder.Default
+    private Boolean isDraft=false;
 
     @ManyToOne
     @JoinColumn(
@@ -67,5 +69,9 @@ public class Recipe {
     )
 
     private List<RecipeProducts> recipeProducts;
+
+    @ManyToOne
+    @JoinColumn(name = "client_id")
+    private Client client;
 
 }

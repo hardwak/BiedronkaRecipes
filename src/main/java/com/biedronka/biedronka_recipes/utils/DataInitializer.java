@@ -100,6 +100,7 @@ public class DataInitializer {
                     .name("Omlet")
                     .multimedia(multimedia)
                     .description("1. Roztrzep jajka.\n2. Dodaj mleko.\n3. Wlej na patelnię.\n4. Smaż aż się zetną.")
+                    .client(client)
                     .build();
 
             recipeRepository.save(przepis);
