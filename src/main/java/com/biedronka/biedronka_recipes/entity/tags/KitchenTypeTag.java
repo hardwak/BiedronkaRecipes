@@ -9,7 +9,6 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @DiscriminatorValue("Kitchen Type")
 public class KitchenTypeTag extends Tag {

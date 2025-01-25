@@ -9,7 +9,6 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @DiscriminatorValue("Diet")
 public class DietTag extends Tag {

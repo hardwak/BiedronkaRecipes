@@ -9,7 +9,6 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @DiscriminatorValue("Style")
 public class StyleTag extends Tag {

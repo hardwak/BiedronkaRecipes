@@ -10,7 +10,6 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @DiscriminatorValue("Difficulty")
 public class DifficultyTag extends Tag {
