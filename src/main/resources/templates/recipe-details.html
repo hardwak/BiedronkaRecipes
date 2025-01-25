@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Przepis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .back-button {
+            text-decoration: none;
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        .recipe-details img {
+            max-width: 100%;
+            height: auto;
+        }
+        .recipe-details h2 {
+            color: #2c3e50;
+        }
+        .recipe-details h3 {
+            color: #34495e;
+        }
+        .recipe-details ul {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+        .recipe-details form {
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+        .comments {
+            margin-top: 20px;
+        }
+        .comment {
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+        }
+        .comment p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+<a href="/" class="back-button">⟵ Wróć</a>
+<div class="recipe-details">
+    <h2 th:text="${recipe.name}">Nazwa Przepisu</h2>
+    <img th:src="${recipe.imageUrl}" alt="Zdjęcie przepisu">
+
+    <h3>Potrzebne składniki</h3>
+    <ul>
+        <li th:each="ingredient : ${recipe.recipeProducts}">
+            <span th:text="${ingredient.product.name}">Nazwa składnika</span> -
+            <span th:text="${ingredient.quantity}">Ilość</span>
+        </li>
+    </ul>
+
+    <h3>Przebieg przepisu</h3>
+    <p th:text="${recipe.instructions}">Instrukcje przepisu</p>
+
+    <!-- Formularz rozpoczęcia gotowania -->
+    <form th:action="@{/recipes/{id}/cook(id=${recipe.id})}" method="post">
+        <button type="submit">Gotuj</button>
+    </form>
+
+    <!-- Formularz polubienia przepisu -->
+    <form th:action="@{/recipes/{id}/like(id=${recipe.id})}" method="post">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <button type="submit">❤️ Polub</button>
+    </form>
+
+    <!-- Formularz oceniania przepisu -->
+    <form th:action="@{/recipes/{id}/rate(id=${recipe.id})}" method="post">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <label for="rating">Oceń:</label>
+        <select id="rating" name="rating" required>
+            <option value="" disabled selected>Wybierz ocenę</option>
+            <option th:each="i : ${#numbers.sequence(1, 5)}" th:value="${i}" th:text="${i}"></option>
+        </select>
+        <button type="submit">Wyślij</button>
+    </form>
+
+    <!-- Formularz dodawania komentarza -->
+    <form th:action="@{/recipes/{id}/comment(id=${recipe.id})}" method="post">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <label for="comment">Skomentuj:</label><br>
+        <textarea id="comment" name="comment" placeholder="Wpisz swój komentarz" rows="4" cols="50" required></textarea><br>
+        <button type="submit">Wyślij</button>
+    </form>
+
+    <h3>Komentarze</h3>
+    <div class="comments">
+        <div th:each="comment : ${recipe.comments}" class="comment">
+            <p th:text="${comment.text}">Treść komentarza</p>
+            <p><small th:text="'Dodano przez: ' + ${comment.client.firstName} + ' ' + ${comment.client.lastName} + ' (' + ${#dates.format(comment.creationDate, 'dd.MM.yyyy')} + ')'"></small></p>
+        </div>
+        <div th:if="${#lists.isEmpty(recipe.comments)}">
+            <p>Brak komentarzy.</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
