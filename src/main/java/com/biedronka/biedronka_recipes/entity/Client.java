@@ -28,7 +28,16 @@ public class Client {
     private String password;
     private LocalDate creationDate;
 
-    @ManyToMany(mappedBy = "clients")
+    @ManyToMany
+    @JoinTable(
+            name = "client_alergens",
+            joinColumns = {
+                    @JoinColumn(name = "client_id")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "allergen_id")
+            }
+    )
     private List<Allergen> allergens;
 
     @ManyToMany

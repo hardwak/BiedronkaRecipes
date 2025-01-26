@@ -23,7 +23,16 @@ public class Product {
     private Double price;
     private Boolean promo;
 
-    @ManyToMany(mappedBy = "products")
+    @ManyToMany
+    @JoinTable(
+            name = "product_alergens",
+            joinColumns = {
+                    @JoinColumn(name = "product_id")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "allergen_id")
+            }
+    )
     private List<Allergen> allergens;
 
     @OneToMany(
