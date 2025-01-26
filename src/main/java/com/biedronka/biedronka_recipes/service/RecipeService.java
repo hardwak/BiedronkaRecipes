@@ -29,6 +29,7 @@ public class RecipeService {
     private final ProductRepository productRepository;
     private final MultimediaRepository multimediaRepository;
     private final RecipeProductsRepository recipeProductsRepository;
+    private final EmployeeRepository employeeRepository;
 
     public List<RecipeSearchResponseDTO> searchRecipe(
             String keyword,
@@ -49,6 +50,7 @@ public class RecipeService {
             return List.of();
 
         return matchedKeywordRecipes.stream()
+                .filter(recipe -> !recipe.getIsDraft())
                 .filter(recipe -> {
                     boolean tagsMatched = (tags == null || tags.isEmpty()) || new HashSet<>(
                             recipe.getTags().stream()
@@ -208,9 +210,10 @@ public class RecipeService {
 
         Client client = clientRepository.getReferenceById(clientId);
         recipe.setClient(client);
+        recipe.setEmployee(employeeRepository.getReferenceById(1L));
         recipe.setIsDraft(isDraft);
         Multimedia multimedia = Multimedia.builder()
-                .url("https://example.com/images/example.jpg")
+                .url("https://images.ctfassets.net/kugm9fp9ib18/3aHPaEUU9HKYSVj1CTng58/d6750b97344c1dc31bdd09312d74ea5b/menu-default-image_220606_web.png")
                 .type("image")
                 .build();
         multimediaRepository.save(multimedia);

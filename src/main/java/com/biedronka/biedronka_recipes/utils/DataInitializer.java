@@ -7,15 +7,18 @@ import com.biedronka.biedronka_recipes.repository.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 public class DataInitializer {
 
     @Bean
+    @Order(2)
     CommandLineRunner initData(
             ClientRepository clientRepository,
             RecipeRepository recipeRepository,
@@ -23,17 +26,18 @@ public class DataInitializer {
             StoreroomItemRepository storeroomItemRepository,
             RecipeProductsRepository recipeProductsRepository,
             CommentRepository commentRepository,
-            MultimediaRepository multimediaRepository
-    ) {
+            MultimediaRepository multimediaRepository,
+            EmployeeRepository employeeRepository,
+            AllergenRepository allergenRepository) {
         return args -> {
             // Tworzenie produktów
-            Product mleko = Product.builder().name("Mleko").build();
+            Product mleko = Product.builder().name("Mleko").allergens(List.of(allergenRepository.getReferenceById(3L))).build();
             Product jaja = Product.builder().name("Jaja").build();
-            Product chleb = Product.builder().name("Chleb").build();
+            Product chleb = Product.builder().name("Chleb").allergens(List.of(allergenRepository.getReferenceById(2L))).build();
             Product cukier = Product.builder().name("Cukier").build();
             Product maslo = Product.builder().name("Masło").build();
             Product szynka = Product.builder().name("Szynka").build();
-            Product ser = Product.builder().name("Ser").build();
+            Product ser = Product.builder().name("Ser").allergens(List.of(allergenRepository.getReferenceById(3L))).build();
             Product banany = Product.builder().name("Banany").build();
             Product maka = Product.builder().name("Mąka").build();
             Product sol = Product.builder().name("Sól").build();
@@ -92,13 +96,14 @@ public class DataInitializer {
 
             // Tworzenie przepisu
             Multimedia multimedia = Multimedia.builder()
-                    .url("https://example.com/images/omlet.jpg")
+                    .url("https://cdn.galleries.smcloud.net/t/galleries/gf-rkTU-5UvR-Kzzc_jak-zrobic-omlet-klasyczny-przepis-664x442.jpg")
                     .type("image")
                     .build();
             multimediaRepository.save(multimedia);
             Recipe przepis = Recipe.builder()
                     .name("Omlet")
                     .multimedia(multimedia)
+                    .employee(employeeRepository.getReferenceById(1L))
                     .description("1. Roztrzep jajka.\n2. Dodaj mleko.\n3. Wlej na patelnię.\n4. Smaż aż się zetną.")
                     .client(client)
                     .build();
@@ -108,7 +113,7 @@ public class DataInitializer {
 
 
             Multimedia multimedia2 = Multimedia.builder()
-                    .url("https://example.com/images/nalesniki.jpg")
+                    .url("https://www.blwpapu.pl/img/blog/nalesniki-pszenne-blw-przepisy_45_original.jpg")
                     .type("image")
                     .build();
             multimediaRepository.save(multimedia2);
@@ -117,6 +122,7 @@ public class DataInitializer {
             Recipe nalesniki = Recipe.builder()
                     .name("Naleśniki")
                     .multimedia(multimedia2)
+                    .employee(employeeRepository.getReferenceById(1L))
                     .description("")
                     .client(client)
                     .isDraft(true)

@@ -43,7 +43,7 @@ public class MyRecipesController {
 
     @GetMapping("")
     public String getMyRecipesIndex(Model model) {
-        Long clientId = 1L; // fixed
+        Long clientId = 2L; // fixed
         List<Recipe> recipes = recipeRepository.findByClientIdAndIsDraft(clientId,false);
         List<Recipe> drafts  = recipeRepository.findByClientIdAndIsDraft(clientId,true);
 
@@ -67,7 +67,7 @@ public class MyRecipesController {
 
     @PostMapping("/save")
     public String saveRecipe(@ModelAttribute RecipeDTO recipeDTO,@RequestParam("isDraft") boolean isDraft) {
-        Long clientId = 1L;
+        Long clientId = 2L;
         recipeService.saveRecipe(recipeDTO,isDraft,clientId);
         return "redirect:/my-recipes";
     }

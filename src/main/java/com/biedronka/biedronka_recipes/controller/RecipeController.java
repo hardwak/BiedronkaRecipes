@@ -69,7 +69,7 @@ public class RecipeController {
 
     @GetMapping("/{id}")
     public String getRecipeDetails(@PathVariable long id, Model model) {
-        Long clientId = 1L; // fixed
+        Long clientId = 2L; // fixed
         Recipe recipe = recipeRepository.getReferenceById(id);
         Client client = clientRepository.getReferenceById(clientId); // tutaj jest shardcodowany client i tyle xd
         Double averageRating = recipeService.getAverageRating(id);

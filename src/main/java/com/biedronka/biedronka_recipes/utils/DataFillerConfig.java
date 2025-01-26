@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -29,6 +30,7 @@ public class DataFillerConfig {
     private final RecipeRateRepository recipeRateRepository;
 
     @Bean
+    @Order(1)
     public CommandLineRunner dataFillerBean() {
         return args -> {
             //--------------------ALLERGENS-----------------------
@@ -251,25 +253,25 @@ public class DataFillerConfig {
                     .recipe(recipe_eggs)
                     .client(client)
                     .build();
-            RecipeRate recipeRate2 = RecipeRate.builder()
-                    .rate(4d)
-                    .createdAt(LocalDateTime.now())
-                    .recipe(recipe_eggs)
-                    .client(client)
-                    .build();
-            RecipeRate recipeRate8 = RecipeRate.builder()
-                    .rate(4d)
-                    .createdAt(LocalDateTime.now())
-                    .recipe(recipe_eggs)
-                    .client(client)
-                    .build();
+//            RecipeRate recipeRate2 = RecipeRate.builder()
+//                    .rate(4d)
+//                    .createdAt(LocalDateTime.now())
+//                    .recipe(recipe_eggs)
+//                    .client(client)
+//                    .build();
+//            RecipeRate recipeRate8 = RecipeRate.builder()
+//                    .rate(4d)
+//                    .createdAt(LocalDateTime.now())
+//                    .recipe(recipe_eggs)
+//                    .client(client)
+//                    .build();
 
-            RecipeRate recipeRate3 = RecipeRate.builder()
-                    .rate(5d)
-                    .createdAt(LocalDateTime.now())
-                    .recipe(recipe_alfredo)
-                    .client(client)
-                    .build();
+//            RecipeRate recipeRate3 = RecipeRate.builder()
+//                    .rate(5d)
+//                    .createdAt(LocalDateTime.now())
+//                    .recipe(recipe_alfredo)
+//                    .client(client)
+//                    .build();
             RecipeRate recipeRate4 = RecipeRate.builder()
                     .rate(3d)
                     .createdAt(LocalDateTime.now())
@@ -277,12 +279,12 @@ public class DataFillerConfig {
                     .client(client)
                     .build();
 
-            RecipeRate recipeRate5 = RecipeRate.builder()
-                    .rate(5d)
-                    .createdAt(LocalDateTime.now())
-                    .recipe(recipe_mushrooms)
-                    .client(client)
-                    .build();
+//            RecipeRate recipeRate5 = RecipeRate.builder()
+//                    .rate(5d)
+//                    .createdAt(LocalDateTime.now())
+//                    .recipe(recipe_mushrooms)
+//                    .client(client)
+//                    .build();
             RecipeRate recipeRate6 = RecipeRate.builder()
                     .rate(2d)
                     .createdAt(LocalDateTime.now())
@@ -296,24 +298,28 @@ public class DataFillerConfig {
                     .recipe(recipe_shrimps)
                     .client(client)
                     .build();
-            RecipeRate recipeRate9 = RecipeRate.builder()
-                    .rate(5d)
-                    .createdAt(LocalDateTime.now())
-                    .recipe(recipe_shrimps)
-                    .client(client)
-                    .build();
-            RecipeRate recipeRate10 = RecipeRate.builder()
-                    .rate(4d)
-                    .createdAt(LocalDateTime.now())
-                    .recipe(recipe_shrimps)
-                    .client(client)
-                    .build();
+//            RecipeRate recipeRate9 = RecipeRate.builder()
+//                    .rate(5d)
+//                    .createdAt(LocalDateTime.now())
+//                    .recipe(recipe_shrimps)
+//                    .client(client)
+//                    .build();
+//            RecipeRate recipeRate10 = RecipeRate.builder()
+//                    .rate(4d)
+//                    .createdAt(LocalDateTime.now())
+//                    .recipe(recipe_shrimps)
+//                    .client(client)
+//                    .build();
 
             recipeRateRepository.saveAll(List.of(
-                    recipeRate1, recipeRate2, recipeRate8,
-                    recipeRate3, recipeRate4,
-                    recipeRate5, recipeRate6,
-                    recipeRate7, recipeRate9, recipeRate10
+                    recipeRate1,
+//                    recipeRate2, recipeRate8,
+//                    recipeRate3,
+                    recipeRate4,
+//                    recipeRate5,
+                    recipeRate6,
+                    recipeRate7
+//                    recipeRate9, recipeRate10
             ));
         };
     }
