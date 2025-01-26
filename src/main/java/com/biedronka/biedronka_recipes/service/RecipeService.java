@@ -1,43 +1,81 @@
 package com.biedronka.biedronka_recipes.service;
 
-
 import com.biedronka.biedronka_recipes.dto.*;
-import com.biedronka.biedronka_recipes.dto.CookingResultDTO;
+import com.biedronka.biedronka_recipes.dto.recipe.RecipeSearchResponseDTO;
 import com.biedronka.biedronka_recipes.entity.*;
+import com.biedronka.biedronka_recipes.entity.tags.Tag;
 import com.biedronka.biedronka_recipes.repository.*;
 import com.biedronka.biedronka_recipes.utils.RecipeMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class RecipeService {
 
-    @Autowired
-    private RecipeRepository recipeRepository;
-    @Autowired
-    private ClientRepository clientRepository;
-    @Autowired
-    private ShoppingListService shoppingListService;
-    @Autowired
-    private CommentRepository commentRepository;
-    @Autowired
-    private RecipeRateRepository recipeRateRepository;
-    @Autowired
-    private StoreroomItemRepository storeroomItemRepository;
-    @Autowired
-    private RecipeMapper recipeMapper;
-    @Autowired
-    private ProductRepository productRepository;
-    @Autowired
-    private MultimediaRepository multimediaRepository;
-    @Autowired
-    private RecipeProductsRepository recipeProductsRepository;
+    private final RecipeRepository recipeRepository;
+    private final RecipeMapper recipeMapper;
+
+    private final ClientRepository clientRepository;
+    private final ShoppingListService shoppingListService;
+    private final CommentRepository commentRepository;
+    private final RecipeRateRepository recipeRateRepository;
+    private final StoreroomItemRepository storeroomItemRepository;
+    private final ProductRepository productRepository;
+    private final MultimediaRepository multimediaRepository;
+    private final RecipeProductsRepository recipeProductsRepository;
+
+    public List<RecipeSearchResponseDTO> searchRecipe(
+            String keyword,
+            List<Long> tags,
+            List<Double> rates,
+            Boolean filterByClientAllergens,
+            Long clientId
+    ) {
+        List<Recipe> matchedKeywordRecipes;
+        if (keyword != null && !keyword.isEmpty())
+            matchedKeywordRecipes =
+                    recipeRepository.findByKeywordInNameDescriptionOrProducts(keyword);
+        else
+            matchedKeywordRecipes =
+                    recipeRepository.findAll();
+
+        if (matchedKeywordRecipes.isEmpty())
+            return List.of();
+
+        return matchedKeywordRecipes.stream()
+                .filter(recipe -> {
+                    boolean tagsMatched = (tags == null || tags.isEmpty()) || new HashSet<>(
+                            recipe.getTags().stream()
+                                    .map(Tag::getId)
+                                    .toList()
+                    ).containsAll(tags);
+
+                    boolean ratesMatched = (rates == null || rates.isEmpty()) || rates.stream()
+                            .anyMatch(rate -> rate == Math.round(
+                                    recipe.getRecipeRates().stream()
+                                            .mapToDouble(RecipeRate::getRate)
+                                            .average()
+                                            .orElse(0.0)));
+
+                    boolean filterByClientAllergensMatched = true;
+                    if (filterByClientAllergens != null && filterByClientAllergens) {
+                        List<Long> clientAllergenIds = recipeRepository.findClientAllergensByClientId(clientId);
+                        filterByClientAllergensMatched = recipe.getRecipeProducts().stream()
+                                .noneMatch(recipeProduct -> recipeProduct.getProduct().getAllergens().stream()
+                                        .anyMatch(allergen -> clientAllergenIds.contains(allergen.getId())));
+                    }
+
+                    return tagsMatched && ratesMatched && filterByClientAllergensMatched;
+                })
+                .map(recipeMapper::toRecipeSearchResponseDTO)
+                .toList();
+    }
 
     public void likeRecipe(Long recipeId, Long clientId) {
         Recipe recipe = recipeRepository.getReferenceById(recipeId);
@@ -96,6 +134,7 @@ public class RecipeService {
             recipeRateRepository.save(newRate);
         }
     }
+
     public boolean hasUserLikedRecipe(Long recipeId, Long clientId) {
         Client client = clientRepository.findById(clientId)
                 .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono użytkownika o ID: " + clientId));
@@ -132,7 +171,6 @@ public class RecipeService {
         return new CookingResultDTO(true, null, "All ingredients available.");
 
 
-
     }
 
     public String confirmCooking(ConfirmCookingRequestDTO requestDTO) {
@@ -157,13 +195,14 @@ public class RecipeService {
 
         return "Cooking confirmed, storeroom updated. Shopping list updated";
     }
+
     public Double getAverageRating(Long recipeId) {
         Double averageRating = recipeRepository.findAverageRatingByRecipeId(recipeId);
         return averageRating != null ? Math.round(averageRating * 10.0) / 10.0 : 0.0;
     }
 
 
-    public void saveRecipe(RecipeDTO recipeDTO,boolean isDraft,Long clientId) {
+    public void saveRecipe(RecipeDTO recipeDTO, boolean isDraft, Long clientId) {
         System.out.println("saveRecipe: " + recipeDTO);
         Recipe recipe = recipeMapper.toEntity(recipeDTO, productRepository);
 
@@ -178,12 +217,11 @@ public class RecipeService {
         recipe.setMultimedia(multimedia);
 
         Recipe existingRecipe;
-        if(recipeDTO.getId() == null) {
-            existingRecipe=null;
-        } else{
+        if (recipeDTO.getId() == null) {
+            existingRecipe = null;
+        } else {
             existingRecipe = recipeRepository.findById(recipe.getId()).orElse(null);
         }
-
 
         if (existingRecipe != null) {
             existingRecipe.setName(recipe.getName());
@@ -250,14 +288,14 @@ public class RecipeService {
                         // Produkt jest, ale ilość niewystarczająca
                         double toBuy_amount = need_amount - have_amount;
                         MissingProductDTO dto = new MissingProductDTO(
-                                 new RecipeProductsDTO(
+                                new RecipeProductsDTO(
                                         needed.getId(),
                                         needed.getAmount(),
                                         needed.getWeightUnit(),
                                         needed.getRecipe().getId(),
                                         needed.getProduct().getId(),
-                                         needed.getProduct().getName()
-                        ),
+                                        needed.getProduct().getName()
+                                ),
                                 toBuy_amount
                         );
                         missingProducts.add(dto);

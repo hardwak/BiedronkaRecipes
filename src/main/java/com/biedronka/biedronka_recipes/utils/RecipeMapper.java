@@ -1,18 +1,33 @@
 package com.biedronka.biedronka_recipes.utils;
 
+import com.biedronka.biedronka_recipes.dto.recipe.RecipeSearchResponseDTO;
 import com.biedronka.biedronka_recipes.dto.RecipeDTO;
 import com.biedronka.biedronka_recipes.dto.RecipeProductOnlyIdDTO;
 import com.biedronka.biedronka_recipes.dto.RecipeReducedDTO;
 import com.biedronka.biedronka_recipes.entity.Recipe;
+import com.biedronka.biedronka_recipes.entity.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import com.biedronka.biedronka_recipes.entity.RecipeProducts;
 import com.biedronka.biedronka_recipes.repository.ProductRepository;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
+@Service
+@RequiredArgsConstructor
 public class RecipeMapper {
+
+    public RecipeSearchResponseDTO toRecipeSearchResponseDTO(Recipe recipe) {
+        return new RecipeSearchResponseDTO(
+                recipe.getId(),
+                recipe.getName(),
+                recipe.getDescription(),
+                recipe.getEmployee().getFirstName() + " " + recipe.getEmployee().getLastName(),
+                recipe.getMultimedia().getUrl(),
+                recipe.getTags().stream().map((Tag::getName)).toList()
+        );
+    }
 
     // Mapowanie pojedynczego obiektu Recipe na RecipeDTO
     public RecipeReducedDTO toDto(Recipe recipe) {
@@ -70,7 +85,6 @@ public class RecipeMapper {
                 recipe.getName(),
                 recipe.getDescription(),
                 recipeProductOnlyIdDTOList
-
         );
     }
 
