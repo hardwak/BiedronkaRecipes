@@ -65,11 +65,11 @@ public class DataFillerConfig {
             Tag kitchenTypeTag2 = KitchenTypeTag.builder().name("Chinese").build();
             Tag kitchenTypeTag3 = KitchenTypeTag.builder().name("Polish").build();
             Tag difficultyTag = DifficultyTag.builder().name("Easy").build();
-            Tag difficultyTag2 = DifficultyTag.builder().name("Medium").build();
+            Tag difficultyTag2 = DifficultyTag.builder().name("Intermediate").build();
             Tag difficultyTag3 = DifficultyTag.builder().name("Hard").build();
-            Tag timeTag = TimeTag.builder().name("Fast").build();
-            Tag timeTag2 = TimeTag.builder().name("Medium").build();
-            Tag timeTag3 = TimeTag.builder().name("Long").build();
+            Tag timeTag = TimeTag.builder().name(">15 min").build();
+            Tag timeTag2 = TimeTag.builder().name("20-30 min").build();
+            Tag timeTag3 = TimeTag.builder().name("30+ min").build();
 
             tagRepository.saveAll(Arrays.asList(
                     styleTag, styleTag2, styleTag3, styleTag4,

@@ -9,6 +9,7 @@ import com.biedronka.biedronka_recipes.utils.AllergenMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -29,22 +30,13 @@ public class AllergenService {
         Client client = clientRepository.findById(clientId).orElseThrow(() -> new IllegalArgumentException("Invalid client ID"));
 
         List<Allergen> selectedAllergens = allergenRepository.findAllById(allergenIds != null ? allergenIds : List.of());
-
         List<Allergen> clientAllergens = client.getAllergens();
 
-        //some method to check list equality better?
-        boolean sameLists = false;
-        if (selectedAllergens.size() == clientAllergens.size()) {
-            sameLists = true;
-            for (int i = 0; i < selectedAllergens.size(); i++) {
-                if (!selectedAllergens.get(i).getId().equals(clientAllergens.get(i).getId())) {
-                    sameLists = false;
-                    break;
-                }
-            }
-        }
-
-        if (sameLists) {
+        if (
+                selectedAllergens.size() == clientAllergens.size() &&
+                new HashSet<>(selectedAllergens).containsAll(clientAllergens) &&
+                new HashSet<>(clientAllergens).containsAll(selectedAllergens)
+        ) {
             throw new IllegalArgumentException("Allergens lists are the same");
         }
 

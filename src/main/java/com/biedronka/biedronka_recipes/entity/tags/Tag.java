@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.Formula;
 
 import java.util.List;
 
@@ -24,4 +25,7 @@ public class Tag {
 
     @ManyToMany(mappedBy = "tags")
     private List<Recipe> recipes;
+
+    @Formula("tag_type") //this maps the discriminator column
+    private String tagType;
 }
