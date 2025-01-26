@@ -9,13 +9,13 @@ import com.biedronka.biedronka_recipes.entity.RecipeProducts;
 import com.biedronka.biedronka_recipes.repository.*;
 import com.biedronka.biedronka_recipes.utils.RecipeMapper;
 import com.biedronka.biedronka_recipes.service.RecipeService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -45,10 +45,12 @@ public class MyRecipesController {
     public String getMyRecipesIndex(Model model) {
         Long clientId = 1L; // fixed
         List<Recipe> recipes = recipeRepository.findByClientIdAndIsDraft(clientId,false);
+        List<Recipe> drafts  = recipeRepository.findByClientIdAndIsDraft(clientId,true);
 
         List<RecipeReducedDTO> recipeReducedDTOS = recipeMapper.toDtoList(recipes);
+        List<RecipeDTO> draftsDTOs = recipeMapper.toDTOList(drafts);
         model.addAttribute("recipes", recipeReducedDTOS);
-
+        model.addAttribute("drafts", draftsDTOs);
         Client client = clientRepository.getReferenceById(clientId); // tutaj jest shardcodowany client i tyle xd
 
 
@@ -57,60 +59,38 @@ public class MyRecipesController {
 
     @GetMapping("/new")
     public String newRecipeForm(Model model) {
-        model.addAttribute("recipe", new RecipeDTO());
+        RecipeDTO blankRecipeDTO = new RecipeDTO(null,null,null,new ArrayList<>());
+        model.addAttribute("recipe", blankRecipeDTO);
         return "recipe-form"; // Formularz dla nowego przepisu
     }
 
-    @GetMapping("/drafts")
-    public String draftsForm(Model model) {
-        Long clientId = 1L; // Pobierz ID zalogowanego użytkownika dynamicznie
-        List<Recipe> drafts = recipeRepository.findByClientIdAndIsDraft(clientId,true);
 
-        // Mapuj encje na DTO i przekaż listę szkiców do widoku
-        model.addAttribute("drafts", recipeMapper.toDtoList(drafts));
-        model.addAttribute("recipe", new RecipeDTO()); // Pusty przepis na wypadek modyfikacji
-        return "recipe-drafts-form"; // Formularz z listą szkiców
-    }
     @PostMapping("/save")
-    public String saveRecipe(@ModelAttribute RecipeDTO recipeDTO) {
-        Recipe recipe = recipeMapper.toEntity(recipeDTO, productRepository);
+    public String saveRecipe(@ModelAttribute RecipeDTO recipeDTO,@RequestParam("isDraft") boolean isDraft) {
         Long clientId = 1L;
-        Client client = clientRepository.getReferenceById(clientId);
-        recipe.setClient(client);
-        Multimedia multimedia = Multimedia.builder()
-                .url("https://example.com/images/example.jpg")
-                .type("image")
-                .build();
-        multimediaRepository.save(multimedia);
-        recipe.setMultimedia(multimedia);
-        recipeRepository.save(recipe);
-        for (RecipeProducts recipeProduct : recipe.getRecipeProducts()) {
-            recipeProduct.setRecipe(recipe); // Ustaw powiązanie z przepisem
-            recipeProductsRepository.save(recipeProduct);
-        }
+        recipeService.saveRecipe(recipeDTO,isDraft,clientId);
         return "redirect:/my-recipes";
     }
 
-    @PostMapping("/update")
-    public String updateDraft(@ModelAttribute RecipeDTO recipeDTO) {
-        Recipe recipe = recipeMapper.toEntity(recipeDTO,productRepository);
-        Long clientId = 1L;
-        Client client = clientRepository.getReferenceById(clientId);
-        recipe.setClient(client);
-        Multimedia multimedia = Multimedia.builder()
-                .url("https://example.com/images/example.jpg")
-                .type("image")
-                .build();
-        multimediaRepository.save(multimedia);
-        recipe.setMultimedia(multimedia);
-        recipeRepository.save(recipe);
-        for (RecipeProducts recipeProduct : recipe.getRecipeProducts()) {
-            recipeProduct.setRecipe(recipe); // Ustaw powiązanie z przepisem
-            recipeProductsRepository.save(recipeProduct);
-        }
 
-        recipeRepository.save(recipe);
-        return "redirect:/my-recipes/drafts";
+
+    @PostMapping("/edit")
+    public String editDraft(@RequestParam("id") Long id, Model model) {
+        // Pobranie szkicu z bazy danych na podstawie ID
+        Recipe draft = recipeRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono szkicu o ID: " + id));
+
+        // Mapowanie encji na DTO
+        RecipeDTO recipeDTO = recipeMapper.toDTO(draft);
+        System.out.println(recipeDTO);
+
+        // Dodanie danych do modelu
+        model.addAttribute("recipe", recipeDTO);
+
+        // Przekierowanie do widoku formularza edycji
+        return "recipe-form";
     }
+
+
 
 }

@@ -59,5 +59,29 @@ public class RecipeMapper {
         return recipe;
 
     }
+
+    public RecipeDTO toDTO(Recipe recipe) {
+        if (recipe == null) {
+            return null;
+        }
+        List<RecipeProductOnlyIdDTO> recipeProductOnlyIdDTOList = RecipeProductMapper.mapToDtoList(recipe.getRecipeProducts());
+        return new RecipeDTO(
+                recipe.getId(),
+                recipe.getName(),
+                recipe.getDescription(),
+                recipeProductOnlyIdDTOList
+
+        );
+    }
+
+    public List<RecipeDTO> toDTOList(List<Recipe> recipes) {
+        if (recipes == null || recipes.isEmpty()) {
+            return List.of();
+        }
+
+        return recipes.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
 }
 

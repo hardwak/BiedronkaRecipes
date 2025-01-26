@@ -89,7 +89,7 @@
         </button>
         <ul id="dropdownMenu" class="dropdown-menu">
             <li><a class="dropdown-item" th:href="@{/my-recipes/new}">Nowy Przepis</a></li>
-            <li><a class="dropdown-item" th:href="@{/my-recipes/drafts}">Użyj Szkicu</a></li>
+<!--            <li><a class="dropdown-item" th:href="@{/my-recipes/drafts}">Użyj Szkicu</a></li>-->
         </ul>
     </div>
 
@@ -115,6 +115,39 @@
         <!-- Jeśli lista jest pusta -->
         <tr th:if="${#lists.isEmpty(recipes)}">
             <td colspan="4" class="text-center">Nie masz jeszcze żadnych przepisów.</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h1>Moje Szkice</h1>
+
+    <table>
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Nazwa Przepisu</th>
+
+            <th>Akcje</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Iteracja po liście przepisów -->
+        <tr th:each="draft, iterStat : ${drafts}">
+            <td th:text="${iterStat.index + 1}">1</td>
+            <td th:text="${draft.name}">Przykładowy Szkic</td>
+            <td>
+
+                <form action="/my-recipes/edit" method="post">
+                    <input type="hidden" name="id" th:value="${draft.id}" />
+
+
+                <button type="submit" class="btn-primary">Kontynuuj</button>
+                </form>
+            </td>
+        </tr>
+        <!-- Jeśli lista jest pusta -->
+        <tr th:if="${#lists.isEmpty(drafts)}">
+            <td colspan="4" class="text-center">Nie masz jeszcze żadnych szkiców przepisów.</td>
         </tr>
         </tbody>
     </table>

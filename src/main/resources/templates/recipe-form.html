@@ -1,56 +1,167 @@
-<form action="/my-recipes/save" method="post">
+
+
+
+<form action="/my-recipes/save" method="post" id="recipe-form">
+
+    <input type="hidden" name="id" th:value="${recipe.id}" />
+    <input type="hidden" name="isDraft" value="false" id="isDraft" />
+
+
     <!-- Pole dla nazwy przepisu -->
     <label for="name">Nazwa przepisu:</label>
     <input type="text" name="name" id="name" th:value="${recipe.name}" required>
 
     <!-- Pole dla opisu przepisu -->
     <label for="description">Opis przepisu:</label>
-    <textarea name="description" id="description" th:value="${recipe.name}" required></textarea>
+    <textarea name="description" id="description" th:text="${recipe.description}" required></textarea>
 
     <!-- Dynamiczne dodawanie produktów -->
     <h3>Produkty w przepisie:</h3>
     <div id="product-container">
-        <!-- Dynamicznie dodawane produkty pojawią się tutaj -->
-        <div th:each="product, iterStat : ${recipe.recipeProducts}" class="product-item" style="margin-bottom: 10px;">
-            <label>ID produktu:</label>
-            <input type="number" name="recipeProducts[__${iterStat.index}__].productId" th:value="${product.productId}" required>
 
-            <label>Ilość:</label>
-            <input type="number" step="0.01" name="recipeProducts[__${iterStat.index}__].quantity" th:value="${product.quantity}" required>
-        </div>
+        <!-- Produkty będą dodawane tutaj przez JavaScript -->
     </div>
 
     <button type="button" onclick="addProduct()">Dodaj kolejny produkt</button>
+    <button type="button" onclick="saveAsDraft()">Zapisz jako szkic</button>
     <button type="submit">Zapisz przepis</button>
+
+
 </form>
 
+<div id="hidden-products" style="display: none;">
+    <!-- Dane wypełnione przez Thymeleaf -->
+    <div th:each="product, iterStat : ${recipe.recipeProducts}" class="product-item">
+        <label>ID produktu:</label>
+        <input type="number" name="recipeProducts[id].productId" th:value="${product.productId}" required>
+
+        <label>Ilość:</label>
+        <input type="number" step="0.01" name="recipeProducts[id].amount" th:value="${product.amount}" required>
+
+        <button type="button" onclick="removeProduct(this)">Usuń</button>
+    </div>
+</div>
+
 <script>
-    let productIndex = 0; // Początkowy indeks dla produktów
+    // Przenieś istniejące produkty do kontenera
+    const productContainer = document.getElementById("product-container");
+    var currentIndex=0;
+    document.addEventListener("DOMContentLoaded", function () {
+        const hiddenProducts = document.getElementById("hidden-products");
+        const productContainer = document.getElementById("product-container");
+
+        // Skopiuj zawartość ukrytego elementu do widocznego kontenera
+        productContainer.innerHTML = hiddenProducts.innerHTML;
+
+        // Aktualizuj indeksy dla poprawnego działania
+        const productItems = productContainer.getElementsByClassName("product-item");
+        console.log(productItems)
+        for (let i = 0; i < productItems.length; i++) {
+            const inputs = productItems[i].getElementsByTagName("input");
+            inputs[0].name = `recipeProducts[${i}].productId`;
+            inputs[1].name = `recipeProducts[${i}].amount`;
+            console.log(inputs)
+            currentIndex++;
+        }
+
+        hiddenProducts.remove();
+    });
+
+    // Dodaj nowy produkt
 
     function addProduct() {
-        const container = document.getElementById('product-container');
-        const newProduct = document.createElement('div');
-        newProduct.classList.add('product-item');
+        const container = document.getElementById("product-container");
+
+        const newProduct = document.createElement("div");
+        newProduct.classList.add("product-item");
         newProduct.style.marginBottom = "10px";
 
-        // Dynamicznie tworzone pole dla ID produktu i ilości
         newProduct.innerHTML = `
             <label>ID produktu:</label>
-            <input type="number" name="recipeProducts[${productIndex}].productId" required>
+            <input type="number" name="recipeProducts[${currentIndex}].productId" required min ="1">
 
             <label>Ilość:</label>
-            <input type="number" step="0.01" name="recipeProducts[${productIndex}].amount" value="0.0" required>
+            <input type="number" step="0.01" name="recipeProducts[${currentIndex}].amount" value="0.0" required min ="0.01">
 
             <button type="button" onclick="removeProduct(this)">Usuń</button>
         `;
 
         container.appendChild(newProduct);
-        productIndex++;
+        currentIndex++;
     }
 
+    // Usuń produkt
     function removeProduct(button) {
-        // Usunięcie wybranego produktu
         const productItem = button.parentElement;
         productItem.remove();
+
+        // Aktualizuj indeksy po usunięciu
+        const container = document.getElementById("product-container");
+        const productItems = container.getElementsByClassName("product-item");
+
+        for (let i = 0; i < productItems.length; i++) {
+            const inputs = productItems[i].getElementsByTagName("input");
+            inputs[0].name = `recipeProducts[${i}].productId`;
+            inputs[1].name = `recipeProducts[${i}].amount`;
+        }
+
+        productIndex = productItems.length;
     }
+
+    function saveAsDraft() {
+        // Wyłącz walidację na polach poza nazwą
+        document.getElementById("description").removeAttribute("required");
+        document.getElementById("isDraft").value = "true";
+
+        const productContainer = document.getElementById("product-container");
+        const productItems = productContainer.getElementsByClassName("product-item");
+        for (let i = 0; i < productItems.length; i++) {
+            const inputs = productItems[i].getElementsByTagName("input");
+            inputs[0].removeAttribute("required");
+            inputs[1].removeAttribute("required");
+        }
+
+        // Zmień akcję formularza na szkic
+        const form = document.getElementById("recipe-form");
+        form.action = "/my-recipes/save";
+
+        // Wyślij formularz
+        form.submit();
+    }
+
+    function validateForm(event) {
+        const productItems = document.getElementsByClassName("product-item");
+
+        // Sprawdź, czy jest co najmniej 2 produkty
+        if (productItems.length < 2) {
+            alert("Musisz dodać co najmniej dwa składniki.");
+            event.preventDefault();
+            return false;
+        }
+
+        // Sprawdź, czy wszystkie ID i ilości są dodatnie
+        const productIds = new Set();
+        for (let i = 0; i < productItems.length; i++) {
+            const inputs = productItems[i].getElementsByTagName("input");
+            const productId = parseInt(inputs[0].value, 10);
+            const amount = parseFloat(inputs[1].value);
+
+            if (productId <= 0 || amount <= 0) {
+                alert("ID produktu i ilość muszą być liczbami dodatnimi.");
+                event.preventDefault();
+                return false;
+            }
+            if (productIds.has(productId)) {
+                alert("Produkty nie mogą się powtarzać.");
+                event.preventDefault();
+                return false;
+            }
+            productIds.add(productId);
+        }
+
+        // Jeśli wszystko jest poprawne, pozwól na wysłanie formularza
+        return true;
+    }
+    document.getElementById("recipe-form").addEventListener("submit", validateForm);
 </script>
+

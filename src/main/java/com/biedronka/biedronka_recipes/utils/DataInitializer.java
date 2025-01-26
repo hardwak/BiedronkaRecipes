@@ -117,7 +117,9 @@ public class DataInitializer {
             Recipe nalesniki = Recipe.builder()
                     .name("Naleśniki")
                     .multimedia(multimedia2)
-                    .description("1. Wymieszaj mąkę z jajkami i mlekiem.\n2. Dodaj szczyptę soli.\n3. Smaż na patelni.")
+                    .description("")
+                    .client(client)
+                    .isDraft(true)
                     .build();
             recipeRepository.save(nalesniki);
 

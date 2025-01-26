@@ -5,6 +5,7 @@ import com.biedronka.biedronka_recipes.dto.*;
 import com.biedronka.biedronka_recipes.dto.CookingResultDTO;
 import com.biedronka.biedronka_recipes.entity.*;
 import com.biedronka.biedronka_recipes.repository.*;
+import com.biedronka.biedronka_recipes.utils.RecipeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,14 @@ public class RecipeService {
     private RecipeRateRepository recipeRateRepository;
     @Autowired
     private StoreroomItemRepository storeroomItemRepository;
+    @Autowired
+    private RecipeMapper recipeMapper;
+    @Autowired
+    private ProductRepository productRepository;
+    @Autowired
+    private MultimediaRepository multimediaRepository;
+    @Autowired
+    private RecipeProductsRepository recipeProductsRepository;
 
     public void likeRecipe(Long recipeId, Long clientId) {
         Recipe recipe = recipeRepository.getReferenceById(recipeId);
@@ -151,6 +160,74 @@ public class RecipeService {
     public Double getAverageRating(Long recipeId) {
         Double averageRating = recipeRepository.findAverageRatingByRecipeId(recipeId);
         return averageRating != null ? Math.round(averageRating * 10.0) / 10.0 : 0.0;
+    }
+
+
+    public void saveRecipe(RecipeDTO recipeDTO,boolean isDraft,Long clientId) {
+        System.out.println("saveRecipe: " + recipeDTO);
+        Recipe recipe = recipeMapper.toEntity(recipeDTO, productRepository);
+
+        Client client = clientRepository.getReferenceById(clientId);
+        recipe.setClient(client);
+        recipe.setIsDraft(isDraft);
+        Multimedia multimedia = Multimedia.builder()
+                .url("https://example.com/images/example.jpg")
+                .type("image")
+                .build();
+        multimediaRepository.save(multimedia);
+        recipe.setMultimedia(multimedia);
+
+        Recipe existingRecipe;
+        if(recipeDTO.getId() == null) {
+            existingRecipe=null;
+        } else{
+            existingRecipe = recipeRepository.findById(recipe.getId()).orElse(null);
+        }
+
+
+        if (existingRecipe != null) {
+            existingRecipe.setName(recipe.getName());
+            existingRecipe.setDescription(recipe.getDescription());
+            existingRecipe.setIsDraft(isDraft);
+            existingRecipe.setMultimedia(multimedia);
+            List<RecipeProducts> updatedProducts = new ArrayList<>();
+
+            recipeRepository.save(existingRecipe);
+            for (RecipeProducts newProduct : recipe.getRecipeProducts()) {
+                System.out.println("New product: " + newProduct.getProduct().getId() + " " + newProduct.getAmount());
+                RecipeProducts existingProduct = existingRecipe.getRecipeProducts().stream()
+                        .filter(p -> p.getProduct().getId().equals(newProduct.getProduct().getId()))
+                        .findFirst()
+                        .orElse(null);
+
+                if (existingProduct != null) {
+                    // Aktualizowanie ilości w istniejącym produkcie
+                    existingProduct.setAmount(newProduct.getAmount());
+                    updatedProducts.add(existingProduct);
+                    recipeProductsRepository.save(existingProduct);
+
+                } else {
+                    // Dodawanie nowego produktu
+                    System.out.println("New product: " + newProduct.getProduct().getId() + " " + newProduct.getAmount());
+                    newProduct.setRecipe(existingRecipe);
+                    updatedProducts.add(newProduct);
+                    recipeProductsRepository.save(newProduct);
+                }
+            }
+            existingRecipe.setRecipeProducts(updatedProducts);
+            recipeRepository.save(existingRecipe);
+
+        } else {
+            recipeRepository.save(recipe);
+            for (RecipeProducts product : recipe.getRecipeProducts()) {
+                product.setRecipe(recipe);
+                recipeProductsRepository.save(product);
+            }
+            recipeRepository.save(recipe);
+
+        }
+
+
     }
 
     private List<MissingProductDTO> findMissingProducts(List<StoreroomItem> storeroom, List<RecipeProducts> recipeItems) {
