@@ -1,5 +1,7 @@
 package com.biedronka.biedronka_recipes.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -14,6 +17,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id"
+)
 public class Client {
     @Id
     @GeneratedValue
@@ -71,4 +78,8 @@ public class Client {
             mappedBy = "client"
     )
     private List<Comment> comments;
+    @OneToMany(
+            mappedBy = "client"
+    )
+    private List<Recipe> recipes;
 }
