@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Moje Przepisy</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            font-size: 2rem;
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .dropdown-menu {
+            margin-top: 10px;
+            padding: 0;
+            list-style: none;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+            display: none; /* Ukryte domyślnie */
+            position: absolute;
+        }
+        .dropdown-item {
+            display: block;
+            padding: 10px;
+            color: #333;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+        .dropdown-item:hover {
+            background-color: #f1f1f1;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        table th {
+            background-color: #f4f4f4;
+        }
+        table tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+        .text-center {
+            text-align: center;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Moje Przepisy</h1>
+
+    <!-- Przycisk Dodaj z rozwijanym menu -->
+    <div class="mb-3" style="position: relative;">
+        <button class="btn-primary" type="button" onclick="toggleDropdown()">
+            Dodaj
+        </button>
+        <ul id="dropdownMenu" class="dropdown-menu">
+            <li><a class="dropdown-item" th:href="@{/my-recipes/new}">Nowy Przepis</a></li>
+<!--            <li><a class="dropdown-item" th:href="@{/my-recipes/drafts}">Użyj Szkicu</a></li>-->
+        </ul>
+    </div>
+
+    <!-- Lista Przepisów -->
+    <table>
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Nazwa Przepisu</th>
+
+            <th>Akcje</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Iteracja po liście przepisów -->
+        <tr th:each="recipe, iterStat : ${recipes}">
+            <td th:text="${iterStat.index + 1}">1</td>
+            <td th:text="${recipe.name}">Przykładowy Przepis</td>
+            <td>
+                <a th:href="@{'/recipe/' + ${recipe.id}}" class="btn-primary">Zobacz</a>
+            </td>
+        </tr>
+        <!-- Jeśli lista jest pusta -->
+        <tr th:if="${#lists.isEmpty(recipes)}">
+            <td colspan="4" class="text-center">Nie masz jeszcze żadnych przepisów.</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h1>Moje Szkice</h1>
+
+    <table>
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Nazwa Przepisu</th>
+
+            <th>Akcje</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Iteracja po liście przepisów -->
+        <tr th:each="draft, iterStat : ${drafts}">
+            <td th:text="${iterStat.index + 1}">1</td>
+            <td th:text="${draft.name}">Przykładowy Szkic</td>
+            <td>
+
+                <form action="/my-recipes/edit" method="post">
+                    <input type="hidden" name="id" th:value="${draft.id}" />
+
+
+                <button type="submit" class="btn-primary">Kontynuuj</button>
+                </form>
+            </td>
+        </tr>
+        <!-- Jeśli lista jest pusta -->
+        <tr th:if="${#lists.isEmpty(drafts)}">
+            <td colspan="4" class="text-center">Nie masz jeszcze żadnych szkiców przepisów.</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<script>
+    function toggleDropdown() {
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        // Przełącz widoczność menu
+        if (dropdownMenu.style.display === 'block') {
+            dropdownMenu.style.display = 'none';
+        } else {
+            dropdownMenu.style.display = 'block';
+        }
+    }
+
+    // Zamknij menu, jeśli kliknięto poza nim
+    window.onclick = function(event) {
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        if (!event.target.matches('.btn-primary')) {
+            dropdownMenu.style.display = 'none';
+        }
+    }
+</script>
+</body>
+</html>

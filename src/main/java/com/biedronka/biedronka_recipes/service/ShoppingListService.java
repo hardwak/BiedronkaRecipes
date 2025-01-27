@@ -1,28 +1,32 @@
 package com.biedronka.biedronka_recipes.service;
+import com.biedronka.biedronka_recipes.entity.Client;
+import com.biedronka.biedronka_recipes.entity.Product;
 
 import com.biedronka.biedronka_recipes.dto.PromotionDTO;
 import com.biedronka.biedronka_recipes.dto.shoppingList.ShoppingListItemResponseDTO;
 import com.biedronka.biedronka_recipes.entity.ShoppingListItem;
-import com.biedronka.biedronka_recipes.mapper.ShoppingListItemMapper;
+import com.biedronka.biedronka_recipes.repository.ClientRepository;
+import com.biedronka.biedronka_recipes.repository.ProductRepository;
+import com.biedronka.biedronka_recipes.utils.ShoppingListItemMapper;
 import com.biedronka.biedronka_recipes.repository.ShoppingListItemRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Service
 public class ShoppingListService {
+    @Autowired
+    private ClientRepository clientRepository;
+    @Autowired
+    private ShoppingListItemRepository shoppingListItemRepository;
+    @Autowired
+    private ProductRepository productRepository;
+    @Autowired
+    private ShoppingListItemMapper shoppingListItemMapper;
 
-    private final ShoppingListItemRepository shoppingListItemRepository;
-    private final ShoppingListItemMapper shoppingListItemMapper;
-    private final BiedronkaPromoService biedronkaPromoService;
-
-    public ShoppingListService(ShoppingListItemRepository shoppingListItemRepository, ShoppingListItemMapper shoppingListItemMapper) {
-        this.shoppingListItemRepository = shoppingListItemRepository;
-        this.shoppingListItemMapper = shoppingListItemMapper;
-        this.biedronkaPromoService = new BiedronkaPromoService();
-    }
+    private final BiedronkaPromoService biedronkaPromoService = new BiedronkaPromoService();
 
     public List<ShoppingListItemResponseDTO> getActiveShoppingList(Long userId) {
         List<ShoppingListItem> shoppingList = shoppingListItemRepository.findByClientIdAndConfirmationDateIsNull(userId);
@@ -36,6 +40,25 @@ public class ShoppingListService {
             shoppingListItemRepository.save(shoppingListItem);
         });
     }
+
+    public void addToShoppingList(Long clientId, Long productId,Double amount) {
+        Client client = clientRepository.getReferenceById(clientId);
+        Product product = productRepository.getReferenceById(productId);
+        ShoppingListItem existing = shoppingListItemRepository.findByClientAndProduct(client, product);
+        int amountInt = (int) Math.round(amount);
+        if(existing != null) {
+            existing.setQuantity(existing.getQuantity() + amountInt);
+            shoppingListItemRepository.save(existing);
+        } else {
+            ShoppingListItem newItem = ShoppingListItem.builder()
+                    .client(client)
+                    .product(product)
+                    .quantity(amountInt)
+                    .build();
+            shoppingListItemRepository.save(newItem);
+        }
+    }
+
 
     public void applyPromo(Long shoppingListId) {
         System.out.println("apply promo");

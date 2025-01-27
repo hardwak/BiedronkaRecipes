@@ -1,13 +1,9 @@
 package com.biedronka.biedronka_recipes.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Data
 @Builder
@@ -18,12 +14,19 @@ public class Multimedia {
     @Id
     @GeneratedValue
     private Long id;
-    private String url;
+    @Builder.Default
+    private String url="\"https://example.com/images/omlet.jpg\"";
     private String type;
 
-    @OneToOne(mappedBy = "multimedia")
+    @OneToOne(fetch = FetchType.LAZY,mappedBy = "multimedia")
+
+    @EqualsAndHashCode.Exclude
+    @JsonIgnore
     private Recipe recipe;
 
-    @OneToOne(mappedBy = "multimedia")
+    @OneToOne(fetch = FetchType.LAZY,mappedBy = "multimedia")
+
+    @EqualsAndHashCode.Exclude
+    @JsonIgnore
     private Product product;
 }

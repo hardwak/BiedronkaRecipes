@@ -1,0 +1,63 @@
+<h2>Twoje szkice</h2>
+<c:forEach var="draft" items="${drafts}">
+    <form action="/my-recipes/update" method="post">
+        <input type="hidden" name="id" value="${draft.id}">
+
+        <!-- Pole dla nazwy przepisu -->
+        <label for="name-${draft.id}">Nazwa przepisu:</label>
+        <input type="text" name="name" id="name-${draft.id}" value=${draft.name} required>
+
+        <!-- Pole dla opisu przepisu -->
+        <label for="description-${draft.id}">Opis przepisu:</label>
+        <textarea name="description" id="description-${draft.id}" required>${draft.description}</textarea>
+
+        <!-- Dynamiczne dodawanie produktów -->
+        <h3>Produkty w przepisie:</h3>
+        <div id="product-container-${draft.id}">
+            <!-- Iteracja po istniejących produktach -->
+            <c:forEach var="product" items="${draft.recipeProducts}" varStatus="iterStat">
+                <div class="product-item" style="margin-bottom: 10px;">
+                    <label>ID produktu:</label>
+                    <input type="number" name="recipeProducts[${iterStat.index}].productId" value="${product.productId}" required>
+
+                    <label>Ilość:</label>
+                    <input type="number" step="0.01" name="recipeProducts[${iterStat.index}].amount" value="${product.amount}" required>
+                </div>
+            </c:forEach>
+        </div>
+
+        <button type="button" onclick="addProduct(${draft.id})">Dodaj kolejny produkt</button>
+        <button type="submit">Zapisz zmiany</button>
+    </form>
+    <hr>
+</c:forEach>
+
+<script>
+    function addProduct(draftId) {
+        const container = document.getElementById(`product-container-${draftId}`);
+        const productIndex = container.children.length;
+
+        const newProduct = document.createElement('div');
+        newProduct.classList.add('product-item');
+        newProduct.style.marginBottom = "10px";
+
+        // Dynamicznie tworzone pole dla ID produktu i ilości
+        newProduct.innerHTML = `
+            <label>ID produktu:</label>
+            <input type="number" name="recipeProducts[${productIndex}].productId" required>
+
+            <label>Ilość:</label>
+            <input type="number" step="0.01" name="recipeProducts[${productIndex}].amount" value="0.0" required>
+
+            <button type="button" onclick="removeProduct(this)">Usuń</button>
+        `;
+
+        container.appendChild(newProduct);
+    }
+
+    function removeProduct(button) {
+        // Usunięcie wybranego produktu
+        const productItem = button.parentElement;
+        productItem.remove();
+    }
+</script>

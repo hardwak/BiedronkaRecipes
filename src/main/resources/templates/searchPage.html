@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Recipes</title>
+    <link rel="stylesheet" th:href="@{/css/searchPage.css}">
+    <script src="/js/searchPage.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="search-bar">
+        <label for="searchKeyword"></label><input type="text" id="searchKeyword" placeholder="Search recipes" />
+        <button onclick="searchRecipes()">Search</button>
+        <button onclick="toggleFilters()">Filters</button>
+    </div>
+
+    <div id="filters">
+        <div class="filters-container">
+            <div class="filter-group">
+                <h4>Tags</h4>
+                <div th:each="entry : ${tagsByType}">
+                    <h5 th:text="${entry.key}"></h5>
+                    <div>
+                        <span th:each="tag : ${entry.value}"
+                              th:text="${tag.name}"
+                              th:data-id="${tag.id}"
+                              class="tag"
+                              onclick="toggleTagSelection(this)"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <h4>Ratings</h4>
+                <span onclick="toggleRatingSelection(this, 5)">★★★★★</span>
+                <span onclick="toggleRatingSelection(this, 4)">★★★★☆</span>
+                <span onclick="toggleRatingSelection(this, 3)">★★★☆☆</span>
+                <span onclick="toggleRatingSelection(this, 2)">★★☆☆☆</span>
+                <span onclick="toggleRatingSelection(this, 1)">★☆☆☆☆</span>
+            </div>
+
+            <div class="filter-group">
+                <h4>Include My Dietary Preferences</h4>
+                <label>
+                    <input type="checkbox" id="filterByClientAllergens" checked="checked" /> Include my allergens in filter
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="recipes" id="recipeResults">
+        <!-- results will be dynamically added -->
+    </div>
+</div>
+</body>
+</html>

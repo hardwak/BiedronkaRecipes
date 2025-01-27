@@ -1,4 +1,4 @@
-package com.biedronka.biedronka_recipes.mapper;
+package com.biedronka.biedronka_recipes.utils;
 
 import com.biedronka.biedronka_recipes.dto.PromotionDTO;
 import com.biedronka.biedronka_recipes.dto.shoppingList.ShoppingListItemCreationDTO;

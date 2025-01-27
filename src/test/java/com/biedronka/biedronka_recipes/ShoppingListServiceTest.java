@@ -4,7 +4,7 @@ import com.biedronka.biedronka_recipes.dto.PromotionDTO;
 import com.biedronka.biedronka_recipes.dto.shoppingList.ShoppingListItemResponseDTO;
 import com.biedronka.biedronka_recipes.entity.Product;
 import com.biedronka.biedronka_recipes.entity.ShoppingListItem;
-import com.biedronka.biedronka_recipes.mapper.ShoppingListItemMapper;
+import com.biedronka.biedronka_recipes.utils.ShoppingListItemMapper;
 import com.biedronka.biedronka_recipes.repository.ShoppingListItemRepository;
 import com.biedronka.biedronka_recipes.service.BiedronkaPromoService;
 import com.biedronka.biedronka_recipes.service.ShoppingListService;

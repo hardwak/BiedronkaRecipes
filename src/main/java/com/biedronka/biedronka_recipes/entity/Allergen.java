@@ -20,27 +20,9 @@ public class Allergen {
     @Column(nullable = false)
     private String name;
 
-    @ManyToMany
-    @JoinTable(
-            name = "product_alergens",
-            joinColumns = {
-                    @JoinColumn(name = "allergen_id")
-            },
-            inverseJoinColumns = {
-                    @JoinColumn(name = "product_id")
-            }
-    )
+    @ManyToMany(mappedBy = "allergens")
     private List<Product> products;
 
-    @ManyToMany
-    @JoinTable(
-            name = "client_alergens",
-            joinColumns = {
-                    @JoinColumn(name = "allergen_id")
-            },
-            inverseJoinColumns = {
-                    @JoinColumn(name = "client_id")
-            }
-    )
+    @ManyToMany(mappedBy = "allergens")
     private List<Client> clients;
 }

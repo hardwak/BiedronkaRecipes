@@ -1,11 +1,12 @@
 package com.biedronka.biedronka_recipes.entity;
 
 import com.biedronka.biedronka_recipes.entity.tags.Tag;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -14,9 +15,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id"
+)
 public class Recipe {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
     private String description;
@@ -31,6 +36,7 @@ public class Recipe {
 
     @OneToOne
     @JoinColumn(name = "multimedia_id", referencedColumnName = "id")
+
     private Multimedia multimedia;
 
     @ManyToMany(mappedBy = "favoriteRecipes")

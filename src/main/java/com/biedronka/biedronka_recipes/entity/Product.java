@@ -1,10 +1,11 @@
 package com.biedronka.biedronka_recipes.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -13,6 +14,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id"
+)
 public class Product {
     @Id
     @GeneratedValue
@@ -23,7 +28,16 @@ public class Product {
     private Double price;
     private Boolean promo;
 
-    @ManyToMany(mappedBy = "products")
+    @ManyToMany
+    @JoinTable(
+            name = "product_alergens",
+            joinColumns = {
+                    @JoinColumn(name = "product_id")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "allergen_id")
+            }
+    )
     private List<Allergen> allergens;
 
     @OneToMany(
@@ -34,6 +48,7 @@ public class Product {
     @OneToMany(
             mappedBy = "product"
     )
+
     private List<RecipeProducts> productRecipes;
 
     @OneToMany(
@@ -43,5 +58,7 @@ public class Product {
 
     @OneToOne
     @JoinColumn(name = "multimedia_id", referencedColumnName = "id")
+
+
     private Multimedia multimedia;
 }

@@ -1,0 +1,106 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 10px;
+}
+
+.search-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.search-bar input[type="text"] {
+    width: 80%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.search-bar button {
+    padding: 10px 15px;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.search-bar button:hover {
+    background-color: #45a049;
+}
+
+.filters-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.filter-group {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    background: white;
+}
+
+.filter-group h4 {
+    margin: 0;
+    margin-bottom: 5px;
+}
+
+.filter-group span {
+    display: inline-block;
+    margin: 5px 5px 5px 0;
+    cursor: pointer;
+    padding: 5px 10px;
+    background-color: #e0e0e0;
+    border-radius: 20px;
+}
+
+.filter-group span.selected {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.recipes {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.recipe {
+    padding: 10px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.recipe img {
+    max-width: 100%;
+    border-radius: 5px;
+}
+
+.no-results {
+    text-align: center;
+    color: #555;
+}
+
+#filters {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
+}
+
+#filters.open {
+    max-height: 1000px;
+    padding: 10px;
+}
