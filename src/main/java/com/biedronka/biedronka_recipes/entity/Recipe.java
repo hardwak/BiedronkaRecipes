@@ -20,6 +20,8 @@ public class Recipe {
     private Long id;
     private String name;
     private String description;
+    @Builder.Default
+    private Boolean isDraft=false;
 
     @ManyToOne
     @JoinColumn(
@@ -47,18 +49,27 @@ public class Recipe {
     private List<Tag> tags;
 
     @OneToMany(
-            mappedBy = "recipe"
+            mappedBy = "recipe",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
     )
     private List<RecipeRate> recipeRates;
 
     @OneToMany(
-            mappedBy = "recipe"
+            mappedBy = "recipe",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
     )
     private List<Comment> comments;
 
     @OneToMany(
-            mappedBy = "recipe"
+            mappedBy = "recipe",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
     )
     private List<RecipeProducts> recipeProducts;
 
+    @ManyToOne
+    @JoinColumn(name = "client_id")
+    private Client client;
 }

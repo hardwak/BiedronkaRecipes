@@ -17,9 +17,10 @@ public class ShoppingListItem {
     @Id
     @GeneratedValue
     private Long id;
-    private Double quantity;
+    private Integer quantity;
     private Double finalPrice;
     private LocalDate confirmationDate;
+    private Boolean promo;
 
     @ManyToOne
     @JoinColumn(

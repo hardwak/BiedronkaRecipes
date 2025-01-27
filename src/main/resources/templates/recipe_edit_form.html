@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zarządzaj przepisami</title>
+    <style>
+
+        header {
+            padding: 15px;
+            text-align: center;
+            background-color: #b9a20e;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            margin: 0;
+            color: black;
+            font-size: 28px;
+            font-family: 'Arial', sans-serif;
+        }
+
+        header button {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #09a709;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffd700;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background-color: #ffffff;
+            padding: 15px;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        /* Formularz */
+        .edit-form label {
+            display: block;
+            font-size: 16px;
+            margin: 10px 0 5px;
+        }
+
+        .edit-form input,
+        .edit-form textarea {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            background-color: #f9f9f9;
+        }
+
+        .edit-form input[type="number"],
+        .edit-form input[type="text"],
+        .edit-form textarea {
+            width: calc(100% - 24px);
+        }
+
+        .edit-form input:focus,
+        .edit-form textarea:focus {
+            border-color: #ff9900;
+            outline: none;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .form-actions button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            width: 48%;
+        }
+
+        .form-actions button:hover {
+            background-color: #45a049;
+        }
+
+        .form-actions button[type="button"] {
+            background-color: #f44336;
+        }
+
+        .form-actions button[type="button"]:hover {
+            background-color: #e53935;
+        }
+
+        .alert-success,
+        .alert-error {
+            margin-top: 20px;
+            padding: 10px;
+            color: white;
+            font-size: 16px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .alert-success {
+            background-color: #4CAF50;
+        }
+
+        .alert-error {
+            background-color: #f44336;
+        }
+
+        .form-group span {
+            display: inline-block;
+            margin-right: 15px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input[type="number"],
+        .form-group input[type="text"] {
+            width: 30%;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .ingredient-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .ingredient-row span {
+            flex: 2;
+            font-weight: bold;
+            color: #333;
+            text-align: left;
+        }
+
+        .ingredient-row input[type="number"],
+        .ingredient-row input[type="text"] {
+            flex: 1;
+            margin-right: 10px;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .ingredient-row input[type="number"]:last-child {
+            margin-right: 0;
+        }
+
+        .recipe-image-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .recipe-image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);
+        }
+
+
+    </style>
+</head>
+<body>
+<header>
+    <button onclick="window.location.href='/recipe-management'">←</button>
+    <h1>Zarządzaj przepisami</h1>
+</header>
+<div class="container">
+    <h2 class="header">Tryb edycji przepisu</h2>
+    <div class="recipe-image-container">
+        <img th:src="@{${recipeDTO.multimediaUrl}}" alt="Obrazek przepisu" />
+    </div>
+    <form th:action="@{/recipe-management/edit}" method="post" class="edit-form" onsubmit="validateForm(event)">
+
+        <input type="hidden" name="id" th:value="${recipeDTO.id}" />
+
+        <label for="name">Nazwa przepisu:</label>
+        <input type="text" name="name" id="name" th:value="${recipeDTO.name}" required />
+
+        <input type="hidden" id="multimediaUrl" name="multimediaUrl" th:field="${recipeDTO.multimediaUrl}">
+
+        <div class="form-group">
+            <label>Składniki:</label>
+            <div th:each="ingredient, iterStat : ${recipeDTO.recipeProducts}" class="ingredient-row">
+
+                <input type="hidden" th:name="'recipeProducts['+${iterStat.index}+'].productId'" th:value="${ingredient.productId}" />
+
+                <label>
+                    <input type="hidden" th:name="'recipeProducts['+${iterStat.index}+'].productName'" th:value="${ingredient.productName}" required>
+                </label>
+
+                <span th:text="${ingredient.productName}"></span>
+
+                <!-- Pole ilości -->
+                <label>Ilość:</label>
+                <label>
+                    <input type="number"  th:name="'recipeProducts['+${iterStat.index}+'].amount'" th:value="${ingredient.amount}" step="0.01" required />
+                    <span class="error-message"></span>
+                </label>
+
+                <!-- Pole jednostki -->
+                <label>Jednostka:</label>
+                <label>
+                    <input type="text" th:name="'recipeProducts['+${iterStat.index}+'].weightUnit'" th:value="${ingredient.weightUnit}" required />
+                    <span class="error-message"></span>
+                </label>
+
+            </div>
+
+            <label for="description">Opis przepisu:</label>
+            <textarea name="description" id="description" th:text="${recipeDTO.description}" required></textarea>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" onclick="window.location.href='/recipe-management'">Nie zatwierdzam</button>
+            <button type="submit">Zatwierdź</button>
+        </div>
+
+        <div th:if="${success}" class="alert-success">Zmodyfikowano przepis!</div>
+        <div th:if="${error}" class="alert-error">Wszystkie pola muszą być uzupełnione!</div>
+    </form>
+
+    <script>
+        function validateForm(event) {
+            let isValid = true;
+
+            const ingredientAmounts = document.querySelectorAll("input[name^='recipeProducts'][name$='.amount']");
+            const ingredientUnits = document.querySelectorAll("input[name^='recipeProducts'][name$='.weightUnit']");
+
+            ingredientAmounts.forEach((input) => {
+                const value = parseFloat(input.value);
+                const errorMsg = input.nextElementSibling; // Zakładamy, że komunikat błędu znajduje się zaraz po input
+
+                if (isNaN(value) || value <= 0) {
+                    input.style.borderColor = "red";
+                    if (errorMsg) {
+                        errorMsg.textContent = "Podaj liczbę dodatnią!";
+                        errorMsg.style.color = "red";
+                    }
+                    isValid = false;
+                } else {
+                    input.style.borderColor = "";
+                    if (errorMsg) {
+                        errorMsg.textContent = "";
+                    }
+                }
+            });
+
+            ingredientUnits.forEach((input) => {
+                const errorMsg = input.nextElementSibling;
+
+                if (input.value.trim() === "") {
+                    input.style.borderColor = "red";
+                    if (errorMsg) {
+                        errorMsg.textContent = "To pole nie może być puste!";
+                        errorMsg.style.color = "red";
+                    }
+                    isValid = false;
+                } else {
+                    input.style.borderColor = "";
+                    if (errorMsg) {
+                        errorMsg.textContent = "";
+                    }
+                }
+            });
+
+            if (!isValid) {
+                event.preventDefault();
+                alert("Uzupełnij poprawnie wszystkie składniki!");
+            }
+        }
+    </script>
+
+</div>
+</body>
+</html>
