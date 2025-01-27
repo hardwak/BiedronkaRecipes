@@ -1,19 +1,14 @@
 package com.biedronka.biedronka_recipes.service;
 
+import com.biedronka.biedronka_recipes.dto.*;
 import com.biedronka.biedronka_recipes.dto.recipe.RecipeCreationDTO;
 import com.biedronka.biedronka_recipes.dto.recipe.RecipeResponseDTO;
-import com.biedronka.biedronka_recipes.entity.Multimedia;
-import com.biedronka.biedronka_recipes.entity.Product;
-import com.biedronka.biedronka_recipes.entity.Recipe;
-import com.biedronka.biedronka_recipes.entity.RecipeProducts;
-import com.biedronka.biedronka_recipes.utils.RecipeMapper;
-import com.biedronka.biedronka_recipes.dto.*;
 import com.biedronka.biedronka_recipes.dto.recipe.RecipeSearchResponseDTO;
 import com.biedronka.biedronka_recipes.entity.*;
 import com.biedronka.biedronka_recipes.entity.tags.Tag;
 import com.biedronka.biedronka_recipes.repository.*;
-import jakarta.transaction.Transactional;
 import com.biedronka.biedronka_recipes.utils.RecipeMapper;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -402,14 +397,20 @@ public class RecipeService {
         if (recipe.getMultimedia() != null) {
             Multimedia multimedia = recipe.getMultimedia();
             multimedia.setRecipe(null);
-            recipe.setMultimedia(null);
+            multimediaRepository.save(multimedia);
         }
 
-        recipe.getRecipeRates().forEach(rate -> rate.setRecipe(null));
-        recipe.getRecipeRates().clear();
+        recipeRateRepository.deleteAllById(
+                recipe.getRecipeRates().stream()
+                        .map(RecipeRate::getId)
+                        .toList()
+        );
 
-        recipe.getRecipeProducts().forEach(rp -> rp.setRecipe(null));
-        recipe.getRecipeProducts().clear();
+        recipeProductsRepository.deleteAllById(
+                recipe.getRecipeProducts().stream()
+                        .map(RecipeProducts::getId)
+                        .toList()
+        );
 
         recipeRepository.delete(recipe);
     }

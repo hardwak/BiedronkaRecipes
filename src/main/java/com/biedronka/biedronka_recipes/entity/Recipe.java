@@ -1,12 +1,13 @@
 package com.biedronka.biedronka_recipes.entity;
 
 import com.biedronka.biedronka_recipes.entity.tags.Tag;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -56,22 +57,19 @@ public class Recipe {
 
     @OneToMany(
             mappedBy = "recipe",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
+            cascade = CascadeType.ALL
     )
     private List<RecipeRate> recipeRates;
 
     @OneToMany(
             mappedBy = "recipe",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
+            cascade = CascadeType.ALL
     )
     private List<Comment> comments;
 
     @OneToMany(
             mappedBy = "recipe",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
+            cascade = CascadeType.ALL
     )
     private List<RecipeProducts> recipeProducts;
 
