@@ -54,6 +54,7 @@ public class ShoppingListService {
                     .client(client)
                     .product(product)
                     .quantity(amountInt)
+                    .finalPrice(product.getPrice())
                     .build();
             shoppingListItemRepository.save(newItem);
         }

@@ -56,27 +56,27 @@ public class DataInit {
 
             // Create multimedia
             Multimedia m1 = Multimedia.builder()
-                    .url("https://example.com/images/sos-calineo.jpg")
+                    .url("https://cdn.biedronka.pl/newsletter/assets-glovo/_cz33/1974431-n-w41.jpg")
                     .type("image")
                     .build();
             Multimedia m2 = Multimedia.builder()
-                    .url("https://example.com/images/mieso.jpg")
+                    .url("https://media.wired.com/photos/5b493b6b0ea5ef37fa24f6f6/master/pass/meat-80049790.jpg")
                     .type("image")
                     .build();
             Multimedia m3 = Multimedia.builder()
-                    .url("https://example.com/images/papryka.jpg")
+                    .url("https://bazarekpolski.pl/wp-content/uploads/2020/11/papryka-czerwona.jpg")
                     .type("image")
                     .build();
             Multimedia m4 = Multimedia.builder()
-                    .url("https://example.com/images/makaron.jpg")
+                    .url("https://promienieslonca.pl/6776-large_default/makaron-klasyczny-kolanka-400-g.jpg")
                     .type("image")
                     .build();
             Multimedia m5 = Multimedia.builder()
-                    .url("https://example.com/images/spaghetti.jpg")
+                    .url("https://assets.tmecosys.com/image/upload/t_web767x639/img/recipe/ras/Assets/658A0A74-039A-487C-A07A-CAAF61B4615D/Derivates/A230DF28-60DF-429D-ABDA-96ED64E9EE10.jpg")
                     .type("image")
                     .build();
             Multimedia m6 = Multimedia.builder()
-                    .url("https://example.com/images/spaghetti.jpg")
+                    .url("https://az.przepisy.pl/www-przepisy-pl/www.przepisy.pl/przepisy3ii/img/variants/800x0/65-makaron-linque8706.jpg")
                     .type("image")
                     .build();
 
@@ -116,7 +116,7 @@ public class DataInit {
                     .quantity(3)
                     .finalPrice(pr1.getPrice() * 3)
                     .promo(false)
-                    .client(client)
+                    .client(clientRepository.getReferenceById(2L))
                     .product(pr1)
                     .build();
             ShoppingListItem sli2 = ShoppingListItem.builder()
@@ -124,13 +124,13 @@ public class DataInit {
                     .finalPrice(pr2.getPrice())
                     .promo(false)
                     .product(pr2)
-                    .client(client)
+                    .client(clientRepository.getReferenceById(2L))
                     .build();
             ShoppingListItem sli3 = ShoppingListItem.builder()
                     .quantity(3)
                     .finalPrice(pr3.getPrice() * 3)
                     .promo(false)
-                    .client(client)
+                    .client(clientRepository.getReferenceById(2L))
                     .product(pr3)
                     .build();
 

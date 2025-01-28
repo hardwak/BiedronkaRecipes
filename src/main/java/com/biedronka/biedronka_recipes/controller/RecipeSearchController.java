@@ -23,7 +23,7 @@ public class RecipeSearchController {
     private final TagService tagService;
 
     //this used to simulate app use by one user
-    private final Long clientId = 1L;
+    private final Long clientId = 2L;
 
     @GetMapping
     public String search(Model model) {

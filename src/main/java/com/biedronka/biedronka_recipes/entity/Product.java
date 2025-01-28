@@ -58,7 +58,5 @@ public class Product {
 
     @OneToOne
     @JoinColumn(name = "multimedia_id", referencedColumnName = "id")
-
-
     private Multimedia multimedia;
 }

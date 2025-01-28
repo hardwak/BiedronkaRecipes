@@ -22,7 +22,7 @@ public class ShoppingListController {
 
     @GetMapping
     public String viewShoppingList(Model model) {
-        Long clientId = 5L;
+        Long clientId = 2L;
         model.addAttribute("items", shoppingListService.getActiveShoppingList(clientId));
         model.addAttribute("totalPrice", shoppingListService.calculateShoppingListPrice(clientId));
         model.addAttribute("clientId", clientId);

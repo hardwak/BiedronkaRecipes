@@ -1,7 +1,6 @@
 package com.biedronka.biedronka_recipes.utils;
 
 
-
 import com.biedronka.biedronka_recipes.entity.*;
 import com.biedronka.biedronka_recipes.repository.*;
 import org.springframework.boot.CommandLineRunner;
@@ -30,26 +29,124 @@ public class DataInitializer {
             EmployeeRepository employeeRepository,
             AllergenRepository allergenRepository) {
         return args -> {
+
+            Multimedia nophoto = Multimedia.builder()
+                    .url("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png")
+                    .type("image")
+                    .build();
+            Multimedia nophoto2 = Multimedia.builder()
+                    .url("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png")
+                    .type("image")
+                    .build();
+            Multimedia nophoto3 = Multimedia.builder()
+                    .url("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png")
+                    .type("image")
+                    .build();
+            Multimedia nophoto4 = Multimedia.builder()
+                    .url("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png")
+                    .type("image")
+                    .build();
+            Multimedia nophoto5 = Multimedia.builder()
+                    .url("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png")
+                    .type("image")
+                    .build();
+            Multimedia nophoto6 = Multimedia.builder()
+                    .url("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png")
+                    .type("image")
+                    .build();
+            Multimedia nophoto7 = Multimedia.builder()
+                    .url("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png")
+                    .type("image")
+                    .build();
+            Multimedia nophoto8 = Multimedia.builder()
+                    .url("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png")
+                    .type("image")
+                    .build();
+            Multimedia nophoto9 = Multimedia.builder()
+                    .url("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png")
+                    .type("image")
+                    .build();
+            Multimedia nophoto10 = Multimedia.builder()
+                    .url("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png")
+                    .type("image")
+                    .build();
+
+            multimediaRepository.saveAll(List.of(nophoto, nophoto2, nophoto3, nophoto4, nophoto5, nophoto6, nophoto7, nophoto8, nophoto9, nophoto10));
+
             // Tworzenie produktów
-            Product mleko = Product.builder().name("Mleko").allergens(List.of(allergenRepository.getReferenceById(3L))).build();
-            Product jaja = Product.builder().name("Jaja").build();
-            Product chleb = Product.builder().name("Chleb").allergens(List.of(allergenRepository.getReferenceById(2L))).build();
-            Product cukier = Product.builder().name("Cukier").build();
-            Product maslo = Product.builder().name("Masło").build();
-            Product szynka = Product.builder().name("Szynka").build();
-            Product ser = Product.builder().name("Ser").allergens(List.of(allergenRepository.getReferenceById(3L))).build();
-            Product banany = Product.builder().name("Banany").build();
-            Product maka = Product.builder().name("Mąka").build();
-            Product sol = Product.builder().name("Sól").build();
+            Product mleko = Product.builder()
+                    .name("Mleko")
+                    .price(5.99)
+                    .brand("Biedronka")
+                    .multimedia(nophoto)
+                    .allergens(List.of(allergenRepository.getReferenceById(3L)))
+                    .build();
+            Product jaja = Product.builder()
+                    .name("Jaja")
+                    .price(5.99)
+                    .brand("Biedronka")
+                    .multimedia(nophoto2)
+                    .build();
+            Product chleb = Product.builder()
+                    .name("Chleb")
+                    .price(5.99)
+                    .brand("Biedronka")
+                    .multimedia(nophoto3)
+                    .allergens(List.of(allergenRepository.getReferenceById(2L)))
+                    .build();
+            Product cukier = Product.builder()
+                    .name("Cukier")
+                    .price(5.99)
+                    .brand("Biedronka")
+                    .multimedia(nophoto4)
+                    .build();
+            Product maslo = Product.builder()
+                    .name("Masło")
+                    .price(5.99)
+                    .brand("Biedronka")
+                    .multimedia(nophoto5)
+                    .build();
+            Product szynka = Product.builder()
+                    .name("Szynka")
+                    .price(5.99)
+                    .brand("Biedronka")
+                    .multimedia(nophoto6)
+                    .build();
+            Product ser = Product.builder()
+                    .name("Ser")
+                    .price(5.99)
+                    .brand("Biedronka")
+                    .multimedia(nophoto7)
+                    .allergens(List.of(allergenRepository.getReferenceById(3L)))
+                    .build();
+            Product banany = Product.builder()
+                    .name("Banany")
+                    .price(5.99)
+                    .brand("Biedronka")
+                    .multimedia(nophoto8)
+                    .build();
+            Product maka = Product.builder()
+                    .name("Mąka")
+                    .price(5.99)
+                    .brand("Biedronka")
+                    .multimedia(nophoto9)
+                    .build();
+            Product sol = Product.builder()
+                    .name("Sól")
+                    .price(5.99)
+                    .brand("Biedronka")
+                    .multimedia(nophoto10)
+                    .build();
 
 
-            productRepository.saveAll(Arrays.asList(mleko, jaja, chleb, cukier, maslo,banany,maka,sol,ser,szynka));
+            productRepository.saveAll(Arrays.asList(mleko, jaja, chleb, cukier, maslo, banany, maka, sol, ser, szynka));
 
             // Tworzenie klienta
             Client client = Client.builder()
                     .firstName("Jan")
                     .lastName("Kowalski")
                     .email("jan.kowalski11@example.com")
+                    .allergens(List.of(allergenRepository.getReferenceById(1L), allergenRepository.getReferenceById(3L)))
                     .password("password") // Pamiętaj o hashowaniu haseł w rzeczywistej aplikacji
                     .creationDate(LocalDate.now())
                     .build();
@@ -111,7 +208,6 @@ public class DataInitializer {
             recipeRepository.save(przepis);
 
 
-
             Multimedia multimedia2 = Multimedia.builder()
                     .url("https://www.blwpapu.pl/img/blog/nalesniki-pszenne-blw-przepisy_45_original.jpg")
                     .type("image")
@@ -147,7 +243,6 @@ public class DataInitializer {
                     .build();
 
             recipeProductsRepository.saveAll(Arrays.asList(rp1, rp2, rp3));
-
 
 
             RecipeProducts rpN1 = RecipeProducts.builder().recipe(nalesniki).product(maka).amount(2.0).build();
