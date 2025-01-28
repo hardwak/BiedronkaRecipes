@@ -11,8 +11,8 @@ public class BiedronkaPromoService {
 
     public Map<Long, PromotionDTO> getPromotions() {
         Map<Long, PromotionDTO> promotions = new HashMap<>();
-        promotions.put(1L, new PromotionDTO(1L, "Kup 2 i zapłać mniej: 3,99 przy zakupie 2. DRUGI TANIEJ O 46%", 2, 3.99));
-        promotions.put(4L, new PromotionDTO(4L, "3 w cenie 2", 3, 5.0));
+        promotions.put(17L, new PromotionDTO(17L, "Kup 2 i zapłać mniej: 3,99 przy zakupie 2. DRUGI TANIEJ O 46%", 2, 3.99));
+        promotions.put(20L, new PromotionDTO(20L, "3 w cenie 2", 3, 5.0));
         return promotions;
     }
 }

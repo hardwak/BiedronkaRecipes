@@ -4,14 +4,21 @@ import com.biedronka.biedronka_recipes.dto.PromotionDTO;
 import com.biedronka.biedronka_recipes.dto.shoppingList.ShoppingListItemResponseDTO;
 import com.biedronka.biedronka_recipes.entity.Product;
 import com.biedronka.biedronka_recipes.entity.ShoppingListItem;
-import com.biedronka.biedronka_recipes.utils.ShoppingListItemMapper;
+import com.biedronka.biedronka_recipes.repository.ClientRepository;
+import com.biedronka.biedronka_recipes.repository.ProductRepository;
 import com.biedronka.biedronka_recipes.repository.ShoppingListItemRepository;
 import com.biedronka.biedronka_recipes.service.BiedronkaPromoService;
 import com.biedronka.biedronka_recipes.service.ShoppingListService;
+import com.biedronka.biedronka_recipes.utils.ShoppingListItemMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -20,33 +27,29 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class ShoppingListServiceTest {
 
+    @Mock
     private ShoppingListItemRepository shoppingListItemRepository;
+
+    @Mock
     private ShoppingListItemMapper shoppingListItemMapper;
-    private BiedronkaPromoService biedronkaPromoService;
+
+    @InjectMocks
     private ShoppingListService shoppingListService;
-
-    @BeforeEach
-    void setUp() {
-        shoppingListItemRepository = mock(ShoppingListItemRepository.class);
-        shoppingListItemMapper = mock(ShoppingListItemMapper.class);
-        biedronkaPromoService = mock(BiedronkaPromoService.class);
-
-        shoppingListService = new ShoppingListService(shoppingListItemRepository, shoppingListItemMapper);
-    }
 
     @Test
     void shouldReturnActiveShoppingList() {
         // Given
-        Long userId = 1L;
+        Long userId = 5L;
         List<ShoppingListItem> mockShoppingList = List.of(new ShoppingListItem());
         List<ShoppingListItemResponseDTO> mockResponseDTOs = List.of(
                 new ShoppingListItemResponseDTO(
                         1L, // id
                         2, // quantity
                         20.0, // finalPrice
-                        LocalDate.now(), // confirmationDate
+                        null, // confirmationDate
                         userId, // clientId
                         100L, // productId
                         "Test Product", // productName
@@ -70,15 +73,14 @@ class ShoppingListServiceTest {
         verify(shoppingListItemMapper, times(1)).toShoppingListItemResponseDTOList(mockShoppingList);
     }
 
-
     @Test
     void shouldConfirmShoppingList() {
         // Given
-        Long userId = 1L;
+        Long userId = 5L;
         ShoppingListItem item1 = new ShoppingListItem();
         ShoppingListItem item2 = new ShoppingListItem();
-
         List<ShoppingListItem> mockShoppingList = List.of(item1, item2);
+
         when(shoppingListItemRepository.findByClientIdAndConfirmationDateIsNull(userId)).thenReturn(mockShoppingList);
 
         // When
@@ -92,11 +94,11 @@ class ShoppingListServiceTest {
     }
 
     @Test
-    void shouldApplyPromotion() {
+    void shouldApplyPromotion() throws Exception {
         // Given
         Long shoppingListId = 1L;
         Product product = new Product();
-        product.setId(4L);
+        product.setId(20L);
         product.setPrice(20.0);
 
         ShoppingListItem shoppingListItem = new ShoppingListItem();
@@ -104,10 +106,15 @@ class ShoppingListServiceTest {
         shoppingListItem.setQuantity(2);
         shoppingListItem.setFinalPrice(100.0);
 
-        PromotionDTO promotionDTO = new PromotionDTO(4L, "3 w cenie 2", 3, 5.0);
+        PromotionDTO promotionDTO = new PromotionDTO(20L, "3 w cenie 2", 3, 5.0);
+        BiedronkaPromoService mockPromoService = mock(BiedronkaPromoService.class);
+        when(mockPromoService.getPromotions()).thenReturn(Map.of(product.getId(), promotionDTO));
+
+        Field field = ShoppingListService.class.getDeclaredField("biedronkaPromoService");
+        field.setAccessible(true);
+        field.set(shoppingListService, mockPromoService);
 
         when(shoppingListItemRepository.findById(shoppingListId)).thenReturn(Optional.of(shoppingListItem));
-        when(biedronkaPromoService.getPromotions()).thenReturn(Map.of(product.getId(), promotionDTO));
 
         // When
         shoppingListService.applyPromo(shoppingListId);
@@ -125,7 +132,7 @@ class ShoppingListServiceTest {
     @Test
     void shouldCalculateShoppingListPrice() {
         // Given
-        Long userId = 1L;
+        Long userId = 5L;
         ShoppingListItem item1 = new ShoppingListItem();
         item1.setFinalPrice(20.0);
 
@@ -145,7 +152,7 @@ class ShoppingListServiceTest {
     @Test
     void shouldRemoveItem() {
         // Given
-        Long itemId = 1L;
+        Long itemId = 5L;
         Product product = new Product();
         product.setPrice(10.0);
         product.setId(100L);
@@ -156,7 +163,6 @@ class ShoppingListServiceTest {
         shoppingListItem.setFinalPrice(20.0);
 
         when(shoppingListItemRepository.findById(itemId)).thenReturn(Optional.of(shoppingListItem));
-        //when(biedronkaPromoService.getPromotions()).thenReturn(Map.of(product.getId(), null));
 
         // When
         shoppingListService.removeItem(itemId);
@@ -167,4 +173,3 @@ class ShoppingListServiceTest {
         assertThat(shoppingListItem.getFinalPrice()).isEqualTo(10.0);
     }
 }
-

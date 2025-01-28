@@ -61,13 +61,9 @@ public class ShoppingListService {
 
 
     public void applyPromo(Long shoppingListId) {
-        System.out.println("apply promo");
         ShoppingListItem shoppingListItem = shoppingListItemRepository.findById(shoppingListId).orElse(null);
-        System.out.println(shoppingListItem);
         if (shoppingListItem != null) {
-            System.out.println(biedronkaPromoService.getPromotions());
             PromotionDTO itemPromo = biedronkaPromoService.getPromotions().get(shoppingListItem.getProduct().getId());
-            System.out.println(itemPromo);
             if (itemPromo != null) {
                 int itemQuantity = shoppingListItem.getQuantity();
                 while (itemQuantity % itemPromo.quantityRequired() != 0) {
@@ -76,7 +72,6 @@ public class ShoppingListService {
                 }
                 shoppingListItem.setFinalPrice(shoppingListItem.getQuantity() * itemPromo.promoPricePerUnit());
                 shoppingListItem.setPromo(true);
-                System.out.println(shoppingListItem);
                 shoppingListItemRepository.save(shoppingListItem);
             }
         }
