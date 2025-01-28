@@ -1,0 +1,166 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Moja lista zakupów</title>
+    <style>
+        body {
+            background-color: #FFD700;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            padding: 10px;
+            text-align: center;
+            background-color: #b9a20e;
+        }
+
+        header h1 {
+            margin: 0;
+            color: black;
+            font-size: 24px;
+        }
+
+        header button {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        main {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .shopping-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 2px solid black;
+            background-color: #09a709;
+            color: black;
+            padding: 10px;
+            margin: 10px 0;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 10px;
+        }
+
+        .item-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .item-left img {
+            width: 80px;
+            height: 80px;
+            margin-right: 15px;
+            border: 2px solid #b9a20e;
+            border-radius: 5px;
+        }
+
+        .item-left .product-name {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .item-right {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        .item-right p {
+            margin: 5px 0;
+        }
+
+        .remove-button {
+            color: black;
+            border: black;
+            padding: 5px 10px;
+            border-radius: 10px;
+            width: 60px;
+            cursor: pointer;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #FFD700;
+            text-align: center;
+            padding: 10px;
+        }
+
+        footer p {
+
+            color: white;
+            background-color: #b9a20e;
+            padding: 10px 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+        }
+
+        footer button {
+            background-color: #b9a20e;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <button onclick="window.location.href='index.html'">←</button>
+    <h1>Moja lista zakupów</h1>
+</header>
+
+<main>
+    <div th:each="item : ${items}" class="shopping-item">
+        <div class="item-left">
+            <img th:src="${item.productMultimediaUrl()}" alt="Zdjęcie produktu">
+            <div>
+                <p class="product-name" th:text="${item.productName()}">Nazwa produktu</p>
+                <div th:if="${item.promo()}" style="background-color: #ff4d4d;">
+                    <b>Promocja:</b> <span th:text="${item.promoName()}">Opis promocji</span>
+                    <form th:action="@{/shopping-list/set-promo/{itemId}(itemId=${item.id()})}" >
+                        Zaakceptuj
+                        <button>✔</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="item-right">
+            <form th:action="@{/shopping-list/remove-item/{itemId}/{clientId}(itemId=${item.id()}, clientId=${clientId})}" method="post">
+                <button type="submit" class="remove-button">Usuń jedną sztukę</button>
+            </form>
+            <p>Sztuki: <span th:text="${item.quantity()}">0</span></p>
+            <p>Cena: <span th:text="${item.finalPrice()}">0.00</span> zł</p>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p>Cena końcowa: <b th:text="${totalPrice}">0.00</b> zł</p>
+    <form th:action="@{/shopping-list/confirm/{clientId}(clientId=${clientId})}" method="post">
+        <button type="submit">Zatwierdź listę zakupów</button>
+    </form>
+</footer>
+</body>
+</html>
+

@@ -21,7 +21,7 @@ import java.util.List;
 public class RecipeController {
     private final RecipeRepository recipeRepository;
     private final ClientRepository clientRepository;
-    private  RecipeService recipeService;
+    private final RecipeService recipeService;
 
     public RecipeController(RecipeRepository recipeRepository, ClientRepository clientRepository,RecipeService recipeService) {
         this.recipeRepository = recipeRepository;

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Potwierdzenie</title>
+    <style>
+        header {
+            padding: 10px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            color: black;
+            font-size: 24px;
+        }
+
+        header button {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            font-size: 18px;
+            text-align: center;
+            padding: 10px;
+        }
+
+        ol {
+            list-style-type: decimal;
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        li {
+            display: flex;
+            margin: 10px;
+            padding: 10px;
+            /*background: white;*/
+            align-items: center;
+        }
+
+        li img {
+            width: 100px;
+            height: auto;
+            margin-right: 20px;
+        }
+
+        .info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body style="background-color: white;">
+<header>
+    <button onclick="window.location.href='/shopping-list'" style="background:none; border:none; cursor:pointer;">←</button>
+    <h1>Moja lista zakupów</h1>
+</header>
+
+<main>
+    <ol>
+        <li th:each="item : ${items}">
+            <img th:src="${item.productMultimediaUrl()}" alt="Zdjęcie produktu">
+
+            <div class="info">
+                <p><b th:text="${item.productName()}">Nazwa produktu</b></p>
+                <p>(<span th:text="${item.quantity()}">0</span>szt)</p>
+                <p>Cena: <span th:text="${item.finalPrice()}">0.00</span> zł</p>
+            </div>
+        </li>
+    </ol>
+    <footer>
+        <p>Cena końcowa: <b th:text="${totalPrice}">0.00</b> zł</p>
+    </footer>
+</main>
+</body>
+</html>

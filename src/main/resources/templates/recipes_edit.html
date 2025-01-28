@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zarządzaj przepisami</title>
+    <style>
+
+        header {
+            padding: 10px;
+            text-align: center;
+            background-color: #b9a20e;
+        }
+
+        header h1 {
+            margin: 0;
+            color: black;
+            font-size: 24px;
+        }
+
+        header button {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #FFD700;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 10px;
+            background-color: #09a709;
+        }
+
+        .header {
+            background-color: #ffd700;
+            padding: 15px;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #000;
+        }
+
+        .header button {
+            background-color: #f5f5f5;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            margin: 0 5px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .recipe-card {
+            display: flex;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #e5ffcc;
+            border: 2px solid #000;
+            border-radius: 10px;
+        }
+
+        .recipe-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-right: 10px;
+        }
+
+        .recipe-details {
+            flex-grow: 1;
+        }
+
+        .recipe-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .recipe-author {
+            font-size: 12px;
+            color: gray;
+            margin-bottom: 10px;
+        }
+
+        .recipe-rating {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .recipe-actions {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .recipe-actions button {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            z-index: 1000;
+        }
+
+        .popup button {
+            background-color: #ccc;
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <button onclick="window.location.href='index.html'">←</button>
+    <h1>Moja lista zakupów</h1>
+</header>
+
+<div class="header">
+    <form th:action="@{/recipe-management/edit}">
+        <button>Edytuj przepis</button>
+    </form>
+    <form th:action="@{/recipe-management/add}">
+        <button>Dodanie przepisu</button>
+    </form>
+    <form th:action="@{/recipe-management/delete}">
+        <button>Usunięcie przepisu</button>
+    </form>
+</div>
+
+<div class="container">
+    <div th:each="recipe : ${recipes}" class="recipe-card">
+        <img th:src="${recipe.recipeURL()}" alt="Zdjęcie przepisu" class="recipe-image" />
+        <div class="recipe-details">
+            <div class="recipe-title" th:text="${recipe.name}">Nazwa przepisu</div>
+            <div class="recipe-author" th:text="'Autor: ' + ${recipe.creatorUsername}">Autor</div>
+            <div class="recipe-rating" th:text="'Ocena: ' + ${recipe.rate} + ' ★'">Ocena</div>
+            <div class="recipe-ingredients">
+                <p><b>Składniki: </b><span th:text="${recipe.ingredients().get(0).productName() + ' ' +
+                recipe.ingredients().get(0).amount() + ' ' + recipe.ingredients().get(0).weightUnit()}"></span>...</p>
+                <p><b>Przebieg: </b><span id="description" th:text="${recipe.description()}"></span>...</p>
+            </div>
+        </div>
+        <div class="recipe-actions">
+            <form th:action="@{/recipe-management/edit/{id}(id=${recipe.recipeId()})}" method="post">
+                <button>Edit</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const descElement = document.getElementById("description");
+        const fullText = descElement.textContent || "";
+        descElement.textContent = fullText.split("\n")[0];
+    });
+</script>
+
+</body>
+</html>

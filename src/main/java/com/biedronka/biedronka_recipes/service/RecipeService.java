@@ -1,11 +1,14 @@
 package com.biedronka.biedronka_recipes.service;
 
 import com.biedronka.biedronka_recipes.dto.*;
+import com.biedronka.biedronka_recipes.dto.recipe.RecipeCreationDTO;
+import com.biedronka.biedronka_recipes.dto.recipe.RecipeResponseDTO;
 import com.biedronka.biedronka_recipes.dto.recipe.RecipeSearchResponseDTO;
 import com.biedronka.biedronka_recipes.entity.*;
 import com.biedronka.biedronka_recipes.entity.tags.Tag;
 import com.biedronka.biedronka_recipes.repository.*;
 import com.biedronka.biedronka_recipes.utils.RecipeMapper;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +22,7 @@ import java.util.List;
 public class RecipeService {
 
     private final RecipeRepository recipeRepository;
+    private final RecipeProductsRepository recipeProductsRepository;
     private final RecipeMapper recipeMapper;
 
     private final ClientRepository clientRepository;
@@ -28,7 +32,6 @@ public class RecipeService {
     private final StoreroomItemRepository storeroomItemRepository;
     private final ProductRepository productRepository;
     private final MultimediaRepository multimediaRepository;
-    private final RecipeProductsRepository recipeProductsRepository;
     private final EmployeeRepository employeeRepository;
 
     public List<RecipeSearchResponseDTO> searchRecipe(
@@ -359,5 +362,113 @@ public class RecipeService {
         return sb.toString();
     }
 
+    public List<RecipeResponseDTO> getAllRecipes() {
+        List<Recipe> recipes = recipeRepository.findAll();
+        return recipeMapper.toResponseDtoList(recipes);
+    }
 
+    public RecipeResponseDTO getRecipeById(Long id) {
+        Recipe recipe = recipeRepository.findById(id).orElse(null);
+        if (recipe != null) {
+            return recipeMapper.toResponseDto(recipe);
+        }
+        return null;
+    }
+
+    public Recipe getRecipeByID(Long id) {
+        return recipeRepository.findById(id).orElse(null);
+    }
+
+    public RecipeCreationDTO getRecipeCreationDto(Long id) {
+        Recipe recipe = recipeRepository.findById(id).orElse(null);
+        if (recipe != null) {
+            System.out.println(RecipeCreationDTO.fromEntity(recipe));
+            return RecipeCreationDTO.fromEntity(recipe);
+        } else {
+            return new RecipeCreationDTO();
+        }
+    }
+
+    @Transactional
+    public void deleteRecipeById(Long id) {
+        Recipe recipe = recipeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Recipe not found"));
+
+        if (recipe.getMultimedia() != null) {
+            Multimedia multimedia = recipe.getMultimedia();
+            multimedia.setRecipe(null);
+            multimediaRepository.save(multimedia);
+        }
+
+        recipeRateRepository.deleteAllById(
+                recipe.getRecipeRates().stream()
+                        .map(RecipeRate::getId)
+                        .toList()
+        );
+
+        recipeProductsRepository.deleteAllById(
+                recipe.getRecipeProducts().stream()
+                        .map(RecipeProducts::getId)
+                        .toList()
+        );
+
+        recipeRepository.delete(recipe);
+    }
+
+
+    @Transactional
+    public void updateRecipe(RecipeCreationDTO recipeDTO) {
+        Recipe recipe = recipeRepository.getReferenceById(recipeDTO.getId());
+        recipe.setName(recipeDTO.getName());
+        recipe.setDescription(recipeDTO.getDescription());
+
+        Multimedia multimedia = recipe.getMultimedia();
+        multimedia.setUrl(recipeDTO.getMultimediaUrl());
+        multimediaRepository.save(multimedia);
+
+        recipe.getRecipeProducts().clear();
+        recipeDTO.getRecipeProducts().forEach(ingredientDTO -> {
+            Product product = productRepository.findById(ingredientDTO.getProductId())
+                    .orElseThrow(() -> new RuntimeException("Produkt nie został znaleziony"));
+            RecipeProducts recipeProduct = RecipeProducts.builder()
+                    .product(product)
+                    .recipe(recipe)
+                    .amount(ingredientDTO.getAmount())
+                    .weightUnit(ingredientDTO.getWeightUnit())
+                    .build();
+            recipe.getRecipeProducts().add(recipeProduct);
+        });
+
+        recipeRepository.save(recipe);
+    }
+
+    @Transactional
+    public void addRecipe(RecipeCreationDTO recipeDTO) {
+        Multimedia multimedia = Multimedia.builder()
+                .url(recipeDTO.getMultimediaUrl())
+                .type("image")
+                .build();
+        multimediaRepository.save(multimedia);
+
+        Recipe recipe = Recipe.builder()
+                .name(recipeDTO.getName())
+                .description(recipeDTO.getDescription())
+                .multimedia(multimedia)
+                .build();
+
+        recipeDTO.getRecipeProducts().forEach(ingredientDTO -> {
+            Product product = productRepository.findById(ingredientDTO.getProductId())
+                    .orElseThrow(() -> new RuntimeException("Produkt nie został znaleziony"));
+            RecipeProducts recipeProduct = RecipeProducts.builder()
+                    .product(product)
+                    .recipe(recipe)
+                    .amount(ingredientDTO.getAmount())
+                    .weightUnit(ingredientDTO.getWeightUnit())
+                    .build();
+            recipe.getRecipeProducts().add(recipeProduct);
+        });
+
+        recipeRepository.save(recipe);
+    }
 }
+
